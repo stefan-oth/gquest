@@ -31,7 +31,6 @@ public class SaveCharacterServlet extends HttpServlet {
 	    CharClass charClass = CharClass.valueOf(checkNull(req.getParameter("charclass")));
 	    
 	    //TODO geht das mit dem Player-Objekt bzw. der Id auch anders?
-	    //Test
 	    String playerId = req.getParameter("playerid");
 	    PlayerDAO dao = DAOManager.getPlayerDAO();
 	    
