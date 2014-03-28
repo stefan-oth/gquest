@@ -60,7 +60,6 @@ if (user != null){
 <% if (user != null){ %> 
 
 <form action="/save" method="post" accept-charset="utf-8">
-  <input type="hidden" name="playerid" id="playerid" value="<%= player.getId() == null ? "" : player.getId() %>"/>
   <table>
     <tr>
       <td><label for="name">Name:</label></td>

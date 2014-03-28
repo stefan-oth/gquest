@@ -11,20 +11,11 @@ import javax.jdo.annotations.PrimaryKey;
 
 public class Player {
 
-	private Long id;
     private String userId;
 	private String name;
 	private CharClass charClass;
 	private Integer health;
 	private List<Mission> missions = new ArrayList<>();
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
     public String getUserId() {
         return userId;
