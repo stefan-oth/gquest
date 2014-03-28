@@ -3,11 +3,11 @@
 <%@ page import="com.google.appengine.api.users.User" %>
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
-<%@ page import="de.oth.app.helloworld.dao.PlayerDAO" %>
-<%@ page import="de.oth.app.helloworld.dao.DAOManager" %>
-<%@ page import="de.oth.app.helloworld.model.CharClass" %>
-<%@ page import="de.oth.app.helloworld.model.jdo.Player" %>
-<%@ page import="de.oth.app.helloworld.model.jdo.Mission" %>
+<%@ page import="de.oth.app.geekquest.dao.PlayerDAO" %>
+<%@ page import="de.oth.app.geekquest.dao.DAOManager" %>
+<%@ page import="de.oth.app.geekquest.model.CharClass" %>
+<%@ page import="de.oth.app.geekquest.model.jdo.Player" %>
+<%@ page import="de.oth.app.geekquest.model.jdo.Mission" %>
 
 <!DOCTYPE html>
 
