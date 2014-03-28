@@ -1,4 +1,4 @@
-package de.oth.app.helloworld.dao.datastore;
+package de.oth.app.geekquest.dao.datastore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +15,10 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 
-import de.oth.app.helloworld.dao.PlayerDAO;
-import de.oth.app.helloworld.model.CharClass;
-import de.oth.app.helloworld.model.jdo.Mission;
-import de.oth.app.helloworld.model.jdo.Player;
+import de.oth.app.geekquest.dao.PlayerDAO;
+import de.oth.app.geekquest.model.CharClass;
+import de.oth.app.geekquest.model.jdo.Mission;
+import de.oth.app.geekquest.model.jdo.Player;
 
 public class PlayerDAOImplDatastore implements PlayerDAO {
 

@@ -1,4 +1,4 @@
-package de.oth.app.helloworld.model;
+package de.oth.app.geekquest.model;
 
 public enum CharClass {
 	Hobbit, Mage, Dwarf, Elf

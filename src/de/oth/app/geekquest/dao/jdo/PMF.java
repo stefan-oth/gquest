@@ -1,4 +1,4 @@
-package de.oth.app.helloworld.dao.jdo;
+package de.oth.app.geekquest.dao.jdo;
 
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManagerFactory;

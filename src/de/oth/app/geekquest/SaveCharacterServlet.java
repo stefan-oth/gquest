@@ -10,11 +10,11 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
-import de.oth.app.helloworld.dao.DAOManager;
-import de.oth.app.helloworld.dao.PlayerDAO;
-import de.oth.app.helloworld.model.CharClass;
-import de.oth.app.helloworld.model.jdo.Mission;
-import de.oth.app.helloworld.model.jdo.Player;
+import de.oth.app.geekquest.dao.DAOManager;
+import de.oth.app.geekquest.dao.PlayerDAO;
+import de.oth.app.geekquest.model.CharClass;
+import de.oth.app.geekquest.model.jdo.Mission;
+import de.oth.app.geekquest.model.jdo.Player;
 
 @SuppressWarnings("serial")
 public class SaveCharacterServlet extends HttpServlet {

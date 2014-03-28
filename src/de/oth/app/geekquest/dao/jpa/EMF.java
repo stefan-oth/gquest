@@ -1,4 +1,4 @@
-package de.oth.app.helloworld.dao.jpa;
+package de.oth.app.geekquest.dao.jpa;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;

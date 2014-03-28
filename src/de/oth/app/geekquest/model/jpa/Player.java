@@ -1,4 +1,4 @@
-package de.oth.app.helloworld.model.jpa;
+package de.oth.app.geekquest.model.jpa;
 
 import java.util.List;
 
@@ -10,9 +10,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import de.oth.app.helloworld.model.CharClass;
-import de.oth.app.helloworld.model.jpa.Mission;
-import de.oth.app.helloworld.model.jpa.Player;
+import de.oth.app.geekquest.model.CharClass;
+import de.oth.app.geekquest.model.jpa.Mission;
+import de.oth.app.geekquest.model.jpa.Player;
 
 @Entity
 public class Player {

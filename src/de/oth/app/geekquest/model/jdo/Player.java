@@ -1,4 +1,4 @@
-package de.oth.app.helloworld.model.jdo;
+package de.oth.app.geekquest.model.jdo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import de.oth.app.helloworld.model.CharClass;
+import de.oth.app.geekquest.model.CharClass;
 
 @PersistenceCapable(detachable="true")
 public class Player {

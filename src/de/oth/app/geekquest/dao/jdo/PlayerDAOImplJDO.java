@@ -1,14 +1,14 @@
-package de.oth.app.helloworld.dao.jdo;
+package de.oth.app.geekquest.dao.jdo;
 
 import java.util.List;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import de.oth.app.helloworld.dao.PlayerDAO;
-import de.oth.app.helloworld.model.CharClass;
-import de.oth.app.helloworld.model.jdo.Mission;
-import de.oth.app.helloworld.model.jdo.Player;
+import de.oth.app.geekquest.dao.PlayerDAO;
+import de.oth.app.geekquest.model.CharClass;
+import de.oth.app.geekquest.model.jdo.Mission;
+import de.oth.app.geekquest.model.jdo.Player;
 
 public class PlayerDAOImplJDO implements PlayerDAO {
 

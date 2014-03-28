@@ -1,4 +1,4 @@
-package de.oth.app.helloworld.model.jpa;
+package de.oth.app.geekquest.model.jpa;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

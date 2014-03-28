@@ -1,8 +1,8 @@
-package de.oth.app.helloworld.dao;
+package de.oth.app.geekquest.dao;
 
-import de.oth.app.helloworld.model.CharClass;
-import de.oth.app.helloworld.model.jdo.Mission;
-import de.oth.app.helloworld.model.jdo.Player;
+import de.oth.app.geekquest.model.CharClass;
+import de.oth.app.geekquest.model.jdo.Mission;
+import de.oth.app.geekquest.model.jdo.Player;
 
 public interface PlayerDAO {
 

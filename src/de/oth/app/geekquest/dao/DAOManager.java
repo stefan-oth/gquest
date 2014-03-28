@@ -1,6 +1,6 @@
-package de.oth.app.helloworld.dao;
+package de.oth.app.geekquest.dao;
 
-import de.oth.app.helloworld.dao.datastore.PlayerDAOImplDatastore;
+import de.oth.app.geekquest.dao.datastore.PlayerDAOImplDatastore;
 
 public class DAOManager {
     

@@ -1,4 +1,4 @@
-package de.oth.app.helloworld.model.jdo;
+package de.oth.app.geekquest.model.jdo;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;

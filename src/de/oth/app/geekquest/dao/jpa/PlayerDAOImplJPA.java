@@ -1,10 +1,10 @@
-package de.oth.app.helloworld.dao.jpa;
+package de.oth.app.geekquest.dao.jpa;
 
 import javax.persistence.EntityManager;
 
-import de.oth.app.helloworld.model.CharClass;
-import de.oth.app.helloworld.model.jpa.Mission;
-import de.oth.app.helloworld.model.jpa.Player;
+import de.oth.app.geekquest.model.CharClass;
+import de.oth.app.geekquest.model.jpa.Mission;
+import de.oth.app.geekquest.model.jpa.Player;
 
 public class PlayerDAOImplJPA {
 
