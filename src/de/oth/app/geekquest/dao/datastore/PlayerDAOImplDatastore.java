@@ -63,6 +63,10 @@ public class PlayerDAOImplDatastore implements PlayerDAO {
         mission.setDescription(description);
         return mission;
     }
+    
+    private Key getKey(Player player) {
+        return KeyFactory.createKey(Player.class.getSimpleName(), player.getUserId());
+    }
 
     @Override
     public Player find(Key key) {
@@ -158,10 +162,6 @@ public class PlayerDAOImplDatastore implements PlayerDAO {
         mission.setIsAccomplished((Boolean) entity.getProperty("isAccomplished"));
         
         return mission;
-    }
-    
-    private Key getKey(Player player) {
-        return KeyFactory.createKey(Player.class.getSimpleName(), player.getUserId());
     }
 
 }
