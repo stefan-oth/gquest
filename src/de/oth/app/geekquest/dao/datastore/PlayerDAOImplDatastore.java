@@ -17,8 +17,8 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 
 import de.oth.app.geekquest.dao.PlayerDAO;
 import de.oth.app.geekquest.model.CharClass;
-import de.oth.app.geekquest.model.jdo.Mission;
-import de.oth.app.geekquest.model.jdo.Player;
+import de.oth.app.geekquest.model.Mission;
+import de.oth.app.geekquest.model.Player;
 
 public class PlayerDAOImplDatastore implements PlayerDAO {
 

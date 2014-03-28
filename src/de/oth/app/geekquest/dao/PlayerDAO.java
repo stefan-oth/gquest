@@ -1,8 +1,8 @@
 package de.oth.app.geekquest.dao;
 
 import de.oth.app.geekquest.model.CharClass;
-import de.oth.app.geekquest.model.jdo.Mission;
-import de.oth.app.geekquest.model.jdo.Player;
+import de.oth.app.geekquest.model.Mission;
+import de.oth.app.geekquest.model.Player;
 
 public interface PlayerDAO {
 

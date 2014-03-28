@@ -1,21 +1,11 @@
-package de.oth.app.geekquest.model.jdo;
-
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
+package de.oth.app.geekquest.model;
 
 import com.google.appengine.api.datastore.Key;
 
-@PersistenceCapable(detachable="true")
 public class Mission {
     
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
     private Key key;
-    @Persistent
     private String description;
-    @Persistent
     private Boolean isAccomplished;
 
     public Mission() {

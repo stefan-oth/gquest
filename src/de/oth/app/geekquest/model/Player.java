@@ -1,32 +1,22 @@
-package de.oth.app.geekquest.model.jpa;
+package de.oth.app.geekquest.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.jdo.annotations.Element;
+import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
 
-import de.oth.app.geekquest.model.CharClass;
-import de.oth.app.geekquest.model.jpa.Mission;
-import de.oth.app.geekquest.model.jpa.Player;
-
-@Entity
 public class Player {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
     private String userId;
 	private String name;
-	@Enumerated(EnumType.STRING)
 	private CharClass charClass;
 	private Integer health;
-	@Basic
-	private List<Mission> missions;
+	private List<Mission> missions = new ArrayList<>();
 
 	public Long getId() {
 		return id;
@@ -35,7 +25,7 @@ public class Player {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
     public String getUserId() {
         return userId;
     }
@@ -87,5 +77,4 @@ public class Player {
 	public void hurt(int points) {
 		setHealth(getHealth() - points);
 	}
-
 }

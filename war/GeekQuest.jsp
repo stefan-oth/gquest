@@ -6,8 +6,8 @@
 <%@ page import="de.oth.app.geekquest.dao.PlayerDAO" %>
 <%@ page import="de.oth.app.geekquest.dao.DAOManager" %>
 <%@ page import="de.oth.app.geekquest.model.CharClass" %>
-<%@ page import="de.oth.app.geekquest.model.jdo.Player" %>
-<%@ page import="de.oth.app.geekquest.model.jdo.Mission" %>
+<%@ page import="de.oth.app.geekquest.model.Player" %>
+<%@ page import="de.oth.app.geekquest.model.Mission" %>
 
 <!DOCTYPE html>
 

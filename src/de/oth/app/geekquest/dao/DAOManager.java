@@ -6,7 +6,6 @@ public class DAOManager {
     
     
     public static PlayerDAO getPlayerDAO() {
-        //return new PlayerDAOImplJDO();
         return new PlayerDAOImplDatastore();
     }
 
