@@ -11,8 +11,11 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
+import de.oth.app.geekquest.dao.CharacterDAO;
 import de.oth.app.geekquest.dao.DAOManager;
+import de.oth.app.geekquest.dao.MissionDAO;
 import de.oth.app.geekquest.dao.PlayerDAO;
+import de.oth.app.geekquest.model.Character;
 import de.oth.app.geekquest.model.CharClass;
 import de.oth.app.geekquest.model.Mission;
 import de.oth.app.geekquest.model.Player;
@@ -22,47 +25,64 @@ public class SaveCharacterServlet extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
 	    
-	    User user = (User) req.getAttribute("user");
-	    if (user == null) {
-	      UserService userService = UserServiceFactory.getUserService();
-	      user = userService.getCurrentUser();
-	    }
+	    PlayerDAO playerDAO = DAOManager.getPlayerDAO();
+        CharacterDAO charDAO = DAOManager.getCharacterDAO();
+        MissionDAO missionDAO = DAOManager.getMissionDAO();
 	    
+	    User user = (User) req.getAttribute("user");
+        if (user == null) {
+            UserService userService = UserServiceFactory.getUserService();
+            user = userService.getCurrentUser();
+        }
+	    
+        Long charId = Long.valueOf(checkNull(req.getParameter("characterId")));
 	    String name = checkNull(req.getParameter("name"));
 	    CharClass charClass = CharClass.valueOf(checkNull(req.getParameter("charclass")));
 	    
-	    PlayerDAO dao = DAOManager.getPlayerDAO();
-	    Player player = dao.findByUserId(user.getUserId());
+	    
+	    Player player = playerDAO.findByUserId(user.getUserId());
 	    
 	    if (player == null) {
-	        System.out.println("Creating new Player");
-	        Key key = dao.create(name, charClass, user.getUserId());
-	        player = dao.find(key);
-	        if (player != null) {
-	            Mission mission = dao.createMission("Destroy ring");
-	            player.addMissions(mission);
-	            mission = dao.createMission("Visit Rivendell");
-	            mission.accomplish();
-	            player.addMissions(mission);
-	            dao.update(player);
+            System.out.println("Creating new Player");
+            Key key = playerDAO.create(user.getUserId());
+            player = playerDAO.find(key);
+	    }
+	    
+        Character character = charDAO.find(charId, player.getUserId());
+	    
+	    if (character == null) {
+	        System.out.println("Creating new Character");
+	        Key key = charDAO.create(name, 10, charClass, player.getKey());
+	        character = charDAO.find(key);
+	        if (character != null) {
+	            Key missionKey = missionDAO.create("Destroy ring", false, character.getKey());
+	            Mission mission = missionDAO.find(missionKey);
+	            character.addMissions(mission);
+	            
+                missionKey = missionDAO.create("Visit Rivendell", true,
+                        character.getKey());
+                mission = missionDAO.find(missionKey);
+                character.addMissions(mission);
 	        } else {
-	            System.out.println("Error missing Player for current user " + user.toString());
+	            System.out.println("Error missing Character for current user " + user.toString() 
+	                    + " with characterId " + charId);
 	        }
 	    } else {
-	        System.out.println("Updating existing Player with for current user " + user.toString());
+            System.out.println("Updating existing Character for current user " + user.toString() 
+                    + " with characterId " + charId);
             boolean changed = false;
-            if (!name.equals(player.getName())) {
-                player.setName(name);
+            if (!name.equals(character.getName())) {
+                character.setName(name);
                 changed = true;
             }
 
-            if (charClass != player.getCharClass()) {
-                player.setCharClass(charClass);
+            if (charClass != character.getCharClass()) {
+                character.setCharClass(charClass);
                 changed = true;
             }
 
             if (changed) {
-                dao.update(player);
+                charDAO.update(character);
             }
 	    }
 

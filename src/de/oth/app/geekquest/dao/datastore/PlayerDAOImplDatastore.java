@@ -1,20 +1,18 @@
 package de.oth.app.geekquest.dao.datastore;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Query;
 
+import de.oth.app.geekquest.dao.CharacterDAO;
+import de.oth.app.geekquest.dao.DAOManager;
 import de.oth.app.geekquest.dao.PlayerDAO;
-import de.oth.app.geekquest.model.CharClass;
-import de.oth.app.geekquest.model.Mission;
+import de.oth.app.geekquest.model.Character;
 import de.oth.app.geekquest.model.Player;
 
 public class PlayerDAOImplDatastore implements PlayerDAO {
@@ -23,7 +21,8 @@ public class PlayerDAOImplDatastore implements PlayerDAO {
     public void delete(Player player) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         
-        Key key = getKey(player);
+        Key key = KeyFactory.createKey(Player.class.getSimpleName(), 
+                player.getUserId());
         
         datastore.delete(key);
     }
@@ -35,21 +34,14 @@ public class PlayerDAOImplDatastore implements PlayerDAO {
         Entity entity = getEntity(player);
 
         datastore.put(entity);
-        
-        for (Mission mission : player.getMissions()) {
-            Entity e = getEntity(mission, entity.getKey());
-            datastore.put(e);
-        }
     }
 
     @Override
-    public Key create(String name, CharClass charClass, String userId) {
+    public Key create(String userId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         
         Entity player = new Entity(Player.class.getSimpleName(), userId);
-        player.setProperty("name", name);
-        player.setProperty("health", 10);
-        player.setProperty("charClass", charClass.toString());
+
         player.setProperty("userId", userId);
 
         Key key = datastore.put(player);
@@ -58,32 +50,17 @@ public class PlayerDAOImplDatastore implements PlayerDAO {
     }
 
     @Override
-    public Mission createMission(String description) {
-        Mission mission = new Mission();
-        mission.setDescription(description);
-        return mission;
-    }
-    
-    private Key getKey(Player player) {
-        return KeyFactory.createKey(Player.class.getSimpleName(), player.getUserId());
-    }
-
-    @Override
     public Player find(Key key) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        CharacterDAO charDAO = DAOManager.getCharacterDAO();
         
         try {
             Entity entity = datastore.get(key);
             Player player = getPlayer(entity);
             
-            Query query = new Query(Mission.class.getSimpleName()).setAncestor(entity.getKey());
+            List<Character> characters = charDAO.findByParent(key);
             
-            List<Entity> result = datastore.prepare(query).asList(
-                    FetchOptions.Builder.withDefaults());
-            
-            for (Entity e : result) {
-                player.addMissions(getMission(e));
-            }
+            player.setCharacters(characters);
             
             return player;
         } catch (EntityNotFoundException e) {
@@ -94,74 +71,21 @@ public class PlayerDAOImplDatastore implements PlayerDAO {
 
     @Override
     public Player findByUserId(String userId) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        
         Key key = KeyFactory.createKey(Player.class.getSimpleName(), userId);
-        try {
-            Entity entity = datastore.get(key);
-            if (entity != null) {
-                Player player = getPlayer(entity);
-                
-                Query query = new Query(Mission.class.getSimpleName())
-                        .setAncestor(entity.getKey());
-
-                List<Entity> missions = datastore.prepare(query).asList(
-                        FetchOptions.Builder.withDefaults());
-
-                for (Entity e : missions) {
-                    player.addMissions(getMission(e));
-                }
-
-                return player;
-            }
-        } catch (EntityNotFoundException e) {
-            //TODO was tun
-        }
-        return null;
+        return find(key);
     }
     
     private Player getPlayer(Entity entity) {
-        Player player = new Player();
-        player.setName((String) entity.getProperty("name"));
-        player.setHealth(((Long) entity.getProperty("health")).intValue());
-        player.setCharClass(CharClass.valueOf((String) entity.getProperty("charClass")));
+        Player player =  new Player();
         player.setUserId((String) entity.getProperty("userId"));
-        player.setMissions(new ArrayList<Mission>());
-        
+        player.setKey(entity.getKey());
         return player;
     }
     
     private Entity getEntity(Player player) {
-        Entity entity = new Entity(getKey(player));
-        entity.setProperty("name", player.getName());
-        entity.setProperty("health", player.getHealth());
-        entity.setProperty("charClass", player.getCharClass().toString());
+        Entity entity = new Entity(Player.class.getSimpleName(), player.getUserId());
         entity.setProperty("userId", player.getUserId());
         
         return entity;
     }
-    
-    private Entity getEntity(Mission mission, Key parentKey) {
-        Entity entity = null;
-        if (mission.getKey() == null) {
-            entity = new Entity(Mission.class.getSimpleName(), parentKey);
-        } else {
-            entity = new Entity(mission.getKey());
-        }
-        entity.setProperty("description", mission.getDescription());
-        entity.setProperty("isAccomplished", mission.getIsAccomplished());
-        
-        return entity;
-    }
-    
-    private Mission getMission(Entity entity) {
-        Mission mission = new Mission();
-        
-        mission.setKey(entity.getKey());
-        mission.setDescription((String) entity.getProperty("description"));
-        mission.setIsAccomplished((Boolean) entity.getProperty("isAccomplished"));
-        
-        return mission;
-    }
-
 }

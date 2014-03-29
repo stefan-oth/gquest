@@ -3,20 +3,23 @@ package de.oth.app.geekquest.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jdo.annotations.Element;
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
+import com.google.appengine.api.datastore.Key;
 
 public class Player {
-
+    
+    private Key key;
     private String userId;
-	private String name;
-	private CharClass charClass;
-	private Integer health;
-	private List<Mission> missions = new ArrayList<>();
+    private List<Character> characters = new ArrayList<>();
 
+    
+    public Key getKey() {
+        return key;
+    }
+    
+    public void setKey(Key key) {
+        this.key = key;
+    }
+    
     public String getUserId() {
         return userId;
     }
@@ -24,48 +27,16 @@ public class Player {
     public void setUserId(String userId) {
         this.userId = userId;
     }
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public CharClass getCharClass() {
-		return charClass;
-	}
-
-	public void setCharClass(CharClass charClass) {
-		this.charClass = charClass;
-	}
-
-	public Integer getHealth() {
-		return health;
-	}
-
-	public void setHealth(Integer health) {
-		this.health = health;
-	}
-
-	public List<Mission> getMissions() {
-		return missions;
-	}
-
-	public void setMissions(List<Mission> missions) {
-		this.missions = missions;
-	}
-
-	public void addMissions(Mission mission) {
-		this.missions.add(mission);
-	}
-
-	public void heal(int points) {
-		setHealth(getHealth() + points);
-	}
-
-	public void hurt(int points) {
-		setHealth(getHealth() - points);
-	}
+    
+    public List<Character> getCharacters() {
+        return characters;
+    }
+    
+    public void setCharacters(List<Character> characters) {
+        this.characters = characters;
+    }
+    
+    public void addCharacter(Character character) {
+        this.characters.add(character);
+    }
 }
