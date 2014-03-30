@@ -11,6 +11,7 @@ public class Character {
 	private String name;
 	private CharClass charClass;
 	private Integer health;
+	private String imageBlobKey;
 	private List<Mission> missions = new ArrayList<>();
 
 	public Key getKey() {
@@ -44,6 +45,15 @@ public class Character {
 	public void setHealth(Integer health) {
 		this.health = health;
 	}
+	
+	public String getImageBlobKey() {
+	    return imageBlobKey;
+	}
+	
+	public void setImageBlobKey(String imageBlobKey) {
+	    this.imageBlobKey = imageBlobKey;
+	}
+	
 
 	public List<Mission> getMissions() {
 		return missions;

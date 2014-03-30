@@ -8,6 +8,8 @@
 <%@ page import="de.oth.app.geekquest.model.CharClass" %>
 <%@ page import="de.oth.app.geekquest.model.Character" %>
 <%@ page import="de.oth.app.geekquest.model.Mission" %>
+<%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
+<%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
 
 <!DOCTYPE html>
 
@@ -22,6 +24,7 @@
   </head>
   <body>
 <%
+BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 CharacterDAO dao = DAOManager.getCharacterDAO();
 
 UserService userService = UserServiceFactory.getUserService();
@@ -51,17 +54,20 @@ if (user != null){
   <div style="width: 100%;">
     <div class="line"></div>
     <div class="topLine">
-      <!--div style="float: left;"><img src="images/todo.png" /></div-->
+      
       <div style="float: left;" class="headline">GeekQuest</div>
       <div style="float: right;"><a href="<%=url%>"><%=urlLinktext%></a> <%=(user==null? "" : user.getNickname())%></div>
     </div>
   </div>
 
 <div class="main">
+<% if (character.getImageBlobKey() != null) { %>
+<div style="float: left;"><img src="/serve?blob-key=<%= character.getImageBlobKey() %>" /></div>
+<%}%>
 <div class="headline"><%=headline %></div>
 
 <% if (user != null){ %> 
-
+<div style="float: left;"class="editpanel">
 <form action="/save" method="post" accept-charset="utf-8">
   <input type="hidden" name="characterId" value="<%=characterId%>"/>
   <table>
@@ -107,6 +113,18 @@ if (user != null){
     </tr>
   </table>
 </form>
+
+<form action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="characterId" value="<%=characterId%>"/>
+  <table>
+    <tr>
+      <td width="96px"><label for="image">Image:</label></td>
+      <td width="339px"><input type="file" name="characterImage"></td>
+      <td align="right"><input type="submit" value="Upload"></td>
+    </tr>
+  </table>
+</form>
+</div>
 
 <% }else{ %>
 

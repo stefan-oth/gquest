@@ -125,6 +125,7 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
         character.setName((String) entity.getProperty("name"));
         character.setHealth(((Long) entity.getProperty("health")).intValue());
         character.setCharClass(CharClass.valueOf((String) entity.getProperty("charClass")));
+        character.setImageBlobKey((String) entity.getProperty("imageBlobKey"));
         character.setMissions(new ArrayList<Mission>());
         
         return character;
@@ -140,6 +141,7 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
         entity.setProperty("name", character.getName());
         entity.setProperty("health", character.getHealth());
         entity.setProperty("charClass", character.getCharClass().toString());
+        entity.setProperty("imageBlobKey", character.getImageBlobKey());
         
         return entity;
     }
