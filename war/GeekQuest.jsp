@@ -8,8 +8,12 @@
 <%@ page import="de.oth.app.geekquest.model.CharClass" %>
 <%@ page import="de.oth.app.geekquest.model.Character" %>
 <%@ page import="de.oth.app.geekquest.model.Mission" %>
-<%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
+<%@ page import="com.google.appengine.api.blobstore.BlobKey" %>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
+<%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
+<%@ page import="com.google.appengine.api.images.ImagesService" %>
+<%@ page import="com.google.appengine.api.images.ImagesServiceFactory" %>
+<%@ page import="com.google.appengine.api.images.ServingUrlOptions" %>
 
 <!DOCTYPE html>
 
@@ -35,6 +39,9 @@ String urlLinktext = "Login";
 Character character = null;
 String headline = "";
 Long characterId = null;
+
+ImagesService imagesService = ImagesServiceFactory.getImagesService();
+String imageServingUrl = null;
     
 if (user != null){
     url = userService.createLogoutURL(request.getRequestURI());
@@ -48,6 +55,11 @@ if (user != null){
         character = characters.get(0);
         characterId = character.getKey().getId();
         headline = "Edit your Character";
+        if (character.getImageBlobKey() != null) {
+            BlobKey blobKey = new BlobKey(character.getImageBlobKey());
+            imageServingUrl = imagesService.getServingUrl(
+                ServingUrlOptions.Builder.withBlobKey(blobKey));
+        }
     }
 }
 %>
@@ -61,8 +73,8 @@ if (user != null){
   </div>
 
 <div class="main">
-<% if (character.getImageBlobKey() != null) { %>
-<div style="float: left;"><img src="/serve?blob-key=<%= character.getImageBlobKey() %>" /></div>
+<% if (imageServingUrl != null) { %>
+<div style="float: left;"><img src="<%= imageServingUrl %>" /></div>
 <%}%>
 <div class="headline"><%=headline %></div>
 
@@ -119,7 +131,7 @@ if (user != null){
   <table>
     <tr>
       <td width="96px"><label for="image">Image:</label></td>
-      <td width="339px"><input type="file" name="characterImage"></td>
+      <td width="339px"><input type="file" name="characterImage" accept="image/jpeg,image/png"></td>
       <td align="right"><input type="submit" value="Upload"></td>
     </tr>
   </table>
