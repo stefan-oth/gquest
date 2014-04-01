@@ -11,6 +11,7 @@ public class Character {
 	private String name;
 	private CharClass charClass;
 	private Integer health;
+	private Long score;
 	private String imageBlobKey;
 	private List<Mission> missions = new ArrayList<>();
 
@@ -74,4 +75,12 @@ public class Character {
 	public void hurt(int points) {
 		setHealth(getHealth() - points);
 	}
+
+    public Long getScore() {
+        return score;
+    }
+
+    public void setScore(Long score) {
+        this.score = score;
+    }
 }

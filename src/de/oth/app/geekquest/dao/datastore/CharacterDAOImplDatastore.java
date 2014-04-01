@@ -51,7 +51,8 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
     }
 
     @Override
-    public Key create(String name, Integer health, CharClass charClass, Key parentKey) {
+    public Key create(String name, Integer health, CharClass charClass, Long score, 
+            Key parentKey) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         
         Entity entity = new Entity(Character.class.getSimpleName(), parentKey);
@@ -59,6 +60,7 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
         entity.setProperty("name", name);
         entity.setProperty("health", health);
         entity.setProperty("charClass", charClass.toString());
+        entity.setProperty("score", score);
 
         Key key = datastore.put(entity);
         
@@ -125,6 +127,7 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
         character.setName((String) entity.getProperty("name"));
         character.setHealth(((Long) entity.getProperty("health")).intValue());
         character.setCharClass(CharClass.valueOf((String) entity.getProperty("charClass")));
+        character.setScore((Long) entity.getProperty("score"));
         character.setImageBlobKey((String) entity.getProperty("imageBlobKey"));
         character.setMissions(new ArrayList<Mission>());
         
@@ -141,6 +144,7 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
         entity.setProperty("name", character.getName());
         entity.setProperty("health", character.getHealth());
         entity.setProperty("charClass", character.getCharClass().toString());
+        entity.setProperty("score", character.getScore());
         entity.setProperty("imageBlobKey", character.getImageBlobKey());
         
         return entity;

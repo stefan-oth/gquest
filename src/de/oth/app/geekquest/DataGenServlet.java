@@ -26,6 +26,8 @@ public class DataGenServlet extends HttpServlet{
     
     private static final int MIN_HEALTH = 5;
     private static final int MAX_HEALTH = 20;
+    private static final int MIN_SCORE = 0;
+    private static final int MAX_SCORE = 1000;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -53,7 +55,8 @@ public class DataGenServlet extends HttpServlet{
         for (int i = 0; i < names.length; i++) {
             int classId = (int) (Math.random() * classes.length);
             int health = MIN_HEALTH + (int) (Math.random() * (MAX_HEALTH - MIN_HEALTH));
-            Key key = cDAO.create(names[i], health, classes[classId], player.getKey());
+            long score = MIN_SCORE + (long) (Math.random() * (MAX_SCORE - MIN_SCORE));
+            Key key = cDAO.create(names[i], health, classes[classId], score, player.getKey());
             Character character = cDAO.find(key);
             addMissions(character);
             player.addCharacter(character);

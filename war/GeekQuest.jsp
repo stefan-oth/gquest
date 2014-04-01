@@ -104,6 +104,10 @@ if (user != null){
       <td><label for="Healthvalue"><%= character.getHealth() != null ? character.getHealth() : "" %></label></td>
     </tr>
     <tr>
+      <td><label for="Score">Score:</label></td>
+      <td><label for="Scorevalue"><%= character.getScore() != null ? character.getScore() : "" %></label></td>
+    </tr>
+    <tr>
       <td valign="top"><label for="Missions">Missions:</label></td>
       <td>
         <table>

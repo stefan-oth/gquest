@@ -52,7 +52,7 @@ public class SaveCharacterServlet extends HttpServlet {
 	    
 	    if (character == null) {
 	        System.out.println("Creating new Character");
-	        Key key = charDAO.create(name, 10, charClass, player.getKey());
+	        Key key = charDAO.create(name, 10, charClass, 0l, player.getKey());
 	        character = charDAO.find(key);
 	        if (character != null) {
 	            Key missionKey = missionDAO.create("Destroy ring", false, character.getKey());
