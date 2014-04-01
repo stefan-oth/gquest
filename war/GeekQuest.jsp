@@ -46,13 +46,12 @@ String imageServingUrl = null;
 if (user != null){
     url = userService.createLogoutURL(request.getRequestURI());
     urlLinktext = "Logout";
-    List<Character> characters = dao.findByUserId(user.getUserId());
-    if (characters.size() <= 0) {
+    character = dao.findFirstByUserId(user.getUserId());
+    if (character == null) {
         character = new Character();
         characterId = -1l;
         headline = "Create your Character";
     } else {
-        character = characters.get(0);
         characterId = character.getKey().getId();
         headline = "Edit your Character";
         if (character.getImageBlobKey() != null) {

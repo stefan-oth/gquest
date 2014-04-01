@@ -15,5 +15,6 @@ public interface CharacterDAO {
     public Character find(Key key);
     public Character find(Long id, String userId);
     public List<Character> findByUserId(String userId);
+    public Character findFirstByUserId(String userId);
     public List<Character> findByParent(Key parentKey);
 }

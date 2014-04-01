@@ -121,6 +121,28 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
         return findByParent(parentKey);
     }
     
+    @Override
+    public Character findFirstByUserId(String userId) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        MissionDAO missionsDAO = DAOManager.getMissionDAO();
+        
+        Key parentKey = KeyFactory.createKey(Player.class.getSimpleName(), userId);
+        
+        Query query = new Query(Character.class.getSimpleName()).setAncestor(parentKey);
+
+        List<Entity> entities = datastore.prepare(query).asList(
+                FetchOptions.Builder.withDefaults().limit(1));
+        
+        Character character = null;
+        if ( entities != null && entities.size() > 0) {
+            character = getCharacter(entities.get(0));
+            List<Mission> missions = missionsDAO.findByParent(entities.get(0).getKey());
+            character.setMissions(missions);
+        }
+        
+        return character;
+    }
+    
     private Character getCharacter(Entity entity) {
         Character character = new Character();
         character.setKey(entity.getKey());
