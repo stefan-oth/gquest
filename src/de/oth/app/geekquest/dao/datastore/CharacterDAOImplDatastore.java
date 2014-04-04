@@ -11,6 +11,7 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 
 import de.oth.app.geekquest.dao.CharacterDAO;
 import de.oth.app.geekquest.dao.DAOManager;
@@ -172,4 +173,33 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
         return entity;
     }
 
+    /**
+     * The characters are returned without missions and sorted by the score
+     */
+    @Override
+    public List<Character> getCharactersForHighscore(int max, int offset) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        List<Character> characters = new ArrayList<>();
+        
+        Query query = new Query(Character.class.getSimpleName());
+        query.addSort("score", SortDirection.DESCENDING);
+        
+        FetchOptions options = FetchOptions.Builder.withDefaults();
+        if (max > 0) {
+            options.limit(max);
+        }
+        
+        if (offset > 0) {
+            options.offset(offset);
+        }
+        
+        List<Entity> entities = datastore.prepare(query).asList(options);
+        
+        for (Entity entity : entities) {
+            Character character = getCharacter(entity);
+            characters.add(character);
+        }
+        
+        return characters;
+    }
 }

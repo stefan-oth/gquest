@@ -17,4 +17,5 @@ public interface CharacterDAO {
     public List<Character> findByUserId(String userId);
     public Character findFirstByUserId(String userId);
     public List<Character> findByParent(Key parentKey);
+    public List<Character> getCharactersForHighscore(int max, int offset);
 }

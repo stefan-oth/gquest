@@ -128,7 +128,7 @@ if (user != null){
     </tr>
   </table>
 </form>
-
+<% if (characterId != -1l) { %>
 <form action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data">
   <input type="hidden" name="characterId" value="<%=characterId%>"/>
   <table>
@@ -139,6 +139,7 @@ if (user != null){
     </tr>
   </table>
 </form>
+<% } %>
 </div>
 
 <% }else{ %>
