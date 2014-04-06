@@ -18,11 +18,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     </servlet>
     <servlet>
         <servlet-name>Geekquest</servlet-name>
-        <jsp-file>GeekQuest.jsp</jsp-file>
+        <jsp-file>/GeekQuest.jsp</jsp-file>
     </servlet>
     <servlet>
         <servlet-name>Highscore</servlet-name>
-        <jsp-file>Highscore.jsp</jsp-file>
+        <jsp-file>/Highscore.jsp</jsp-file>
     </servlet>
     
 	<servlet-mapping>
@@ -46,6 +46,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
         <url-pattern>/highscore</url-pattern>
     </servlet-mapping>
 	<welcome-file-list>
-		<welcome-file>highscore.jsp</welcome-file>
+		<welcome-file>Highscore.jsp</welcome-file>
 	</welcome-file-list>
 </web-app>

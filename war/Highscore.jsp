@@ -38,7 +38,7 @@ if (pageString != null) {
 }
 
 List<Character> characters = new ArrayList<Character>();
-int max_rows = 20;
+int max_rows = 10;
 boolean next = false;
 
 //if (user != null) {
