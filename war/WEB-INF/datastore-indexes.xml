@@ -1,0 +1,14 @@
+<!-- Indices written at Sun, 6 Apr 2014 16:41:07 CEST -->
+
+<datastore-indexes autoGenerate="true">
+  <datastore-index kind="Character" ancestor="false">
+    <property name="charClass" direction="asc" />
+    <property name="health" direction="asc" />
+  </datastore-index>
+  <datastore-index kind="Character" ancestor="false">
+    <property name="score" direction="asc" />
+    <property name="health" direction="asc" />
+  </datastore-index>
+</datastore-indexes>
+
+
