@@ -25,6 +25,18 @@
     <title>GeekQuest</title>
     <link rel="stylesheet" type="text/css" href="css/main.css"/>
       <meta charset="utf-8"> 
+    <script>
+      function onValueChangedCharClass()
+      {
+        var charclass = document.getElementById("charclass");
+        var tr = document.getElementById("findHobbitNameLink");
+        if (charclass.value == "Hobbit") {
+          tr.style.display = "table-row";
+        } else {
+          tr.style.display = "none";
+        }
+      }
+    </script>
   </head>
   <body>
 <%
@@ -39,6 +51,8 @@ String urlLinktext = "Login";
 Character character = null;
 String headline = "";
 Long characterId = null;
+String name = "";
+String hobbitName = "";
 
 ImagesService imagesService = ImagesServiceFactory.getImagesService();
 String imageServingUrl = null;
@@ -59,6 +73,14 @@ if (user != null){
             imageServingUrl = imagesService.getServingUrl(
                 ServingUrlOptions.Builder.withBlobKey(blobKey));
         }
+    }
+    
+    hobbitName = request.getParameter("hobbitName");
+    if (hobbitName != null && !hobbitName.equals("")) {
+        name = hobbitName;
+        character.setCharClass(CharClass.Hobbit);
+    } else if (character.getName() != null) {
+        name = character.getName();
     }
 }
 %>
@@ -84,12 +106,16 @@ if (user != null){
   <table>
     <tr>
       <td><label for="name">Name:</label></td>
-      <td><input type="text" name="name" id="name" size="65" value="<%= character.getName() == null ? "" : character.getName() %>"/></td>
+      <td><input type="text" name="name" id="name" size="65" value="<%= name == null ? "" : name %>"/></td>
+    </tr>
+    <tr id = "findHobbitNameLink" style="display: <%= CharClass.Hobbit.equals(character.getCharClass()) ? "table-row" : "none" %>">
+    <td></td>
+    <td><a href="/findhobbitname" >Need help finding a good hobbit name?</a></td>
     </tr>
     <tr>
       <td><label for="charclass">Character class:</label></td>
       <td>
-        <select name="charclass" size="1">
+        <select name="charclass" id="charclass" size="1" onchange="onValueChangedCharClass()">
              <option value="">Please choose</option>
              <option value="Hobbit"<%= CharClass.Hobbit.equals(character.getCharClass()) ? " selected" : "" %>>Hobbit</option>
              <option value="Mage"<%= CharClass.Mage.equals(character.getCharClass()) ? " selected" : "" %>>Mage</option>
