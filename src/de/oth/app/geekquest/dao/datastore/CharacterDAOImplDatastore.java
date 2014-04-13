@@ -3,6 +3,7 @@ package de.oth.app.geekquest.dao.datastore;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -12,6 +13,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.QueryResultList;
 
 import de.oth.app.geekquest.dao.CharacterDAO;
 import de.oth.app.geekquest.dao.DAOManager;
@@ -199,6 +201,102 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
             Character character = getCharacter(entity);
             characters.add(character);
         }
+        
+        return characters;
+    }
+    
+    /**
+     * The characters are returned without missions and sorted by the score.
+     * The result is strong consistent for the user with the given userId.
+     */
+    @Override
+    public List<Character> getTopXCharacters(String userId, int max) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        List<Character> characters = new ArrayList<>();
+        
+        List<Entity> entitiesUser = null;
+        Key parentKey = null;
+        if (userId != null) {
+            parentKey = KeyFactory.createKey(Player.class.getSimpleName(), userId);
+            Query query = new Query(Character.class.getSimpleName()).setAncestor(parentKey);
+            query.addSort("score", SortDirection.DESCENDING);
+            
+            FetchOptions options = FetchOptions.Builder.withDefaults();
+            if (max > 0) {
+                options.limit(max);
+            }
+    
+            entitiesUser = datastore.prepare(query).asList(options);
+        } else {
+            entitiesUser = new ArrayList<>();
+        }
+        
+        QueryResultList<Entity> globalResult = null;
+        Cursor cursor = null;
+        int idxUser = 0;
+        
+        do {
+            Query query = new Query(Character.class.getSimpleName());
+            query.addSort("score", SortDirection.DESCENDING);
+            
+            FetchOptions options = FetchOptions.Builder.withDefaults();
+            if (max > 0) {
+                options.limit(max);
+            }
+            
+            if (cursor != null) {
+                options.startCursor(cursor);
+            }
+            
+            globalResult = datastore.prepare(query).asQueryResultList(options);
+            cursor = globalResult.getCursor();
+            
+            int idxGlobal = 0;
+            Character characterGlobal = null;
+            Character characterUser = null;
+            while (characters.size() < max 
+                    && idxGlobal < globalResult.size()) {
+                
+                if (characterGlobal == null && idxGlobal < globalResult.size()) {
+                    characterGlobal = getCharacter(globalResult.get(idxGlobal));
+                }
+                
+                if (characterUser == null && idxUser < entitiesUser.size()) {
+                    characterUser = getCharacter(entitiesUser.get(idxUser));
+                }
+                
+                //compare scores
+                int cmp = -1;
+                if (characterUser != null) {
+                    cmp = characterUser.getScore().compareTo(
+                            characterGlobal.getScore());
+                    if (cmp == 0) {
+                        // scores are equal, so compare names
+                        cmp = characterUser.getName().compareTo(
+                                characterGlobal.getName());
+                    }
+                }
+                
+                if (cmp > 0) {
+                    characters.add(characterUser);
+                    idxUser++;
+                    characterUser = null;
+                } else if (cmp < 0) {
+                    //ignore characters from the current user because of the 
+                    //eventual consistency of the global query
+                    if (!characterGlobal.getKey().getParent().equals(parentKey)) {
+                        characters.add(characterGlobal);
+                    }
+                    idxGlobal++;
+                    characterGlobal = null;
+                } else  {
+                    characters.add(characterUser);
+                    idxUser++;
+                    characterUser = null;
+                }
+            }
+        
+        } while (characters.size() < max && globalResult.size() >= max);
         
         return characters;
     }

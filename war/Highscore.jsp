@@ -39,15 +39,14 @@ if (pageString != null) {
 
 List<Character> characters = new ArrayList<Character>();
 int max_rows = 10;
-boolean next = false;
 
-//if (user != null) {
-    characters = dao.getCharactersForHighscore(max_rows + 1, pageIdx * max_rows);
-    if (characters.size() > max_rows) {
-        next = true;
-        characters.remove(characters.size() - 1);    
-    }
-//}
+if (user != null) {
+    characters = dao.getTopXCharacters(user.getUserId(), max_rows);
+    url = userService.createLogoutURL(request.getRequestURI());
+    urlLinktext = "Logout";
+} else {
+    characters = dao.getTopXCharacters(null, max_rows);
+}
 
 %>
     <div style="width: 100%;">
@@ -76,23 +75,7 @@ boolean next = false;
           <td><%=character.getScore()%></td>
         </tr> 
 <%}%>
-        <tr>
-          <td colspan="3" align="right">
-            <% if (pageIdx > 0) { %>
-            <a href="/highscore?page=<%=pageIdx - 1%>" >< Prev</a>
-            <% } %>
-            <%= pageIdx + 1 %>
-            <% if (next) { %>
-            <a href="/highscore?page=<%=pageIdx + 1%>" >Next ></a>
-            <% } %>
-          </td>
-        </tr>
       </table>
-<!--% }else{ %-->
-
-<!--Please login with your Google account-->
-
-<!--% } %-->
     </div>
   </body>
 </html> 
