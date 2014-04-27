@@ -1,6 +1,7 @@
 package de.oth.app.geekquest.dao.datastore;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import com.google.appengine.api.datastore.Cursor;
@@ -211,24 +212,11 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
      */
     @Override
     public List<Character> getTopXCharacters(String userId, int max) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        List<Character> characters = new ArrayList<>();
+        List<Character> characters = new ArrayList<>();   
+        List<Entity> entitiesUser =  new ArrayList<>();
         
-        List<Entity> entitiesUser = null;
-        Key parentKey = null;
         if (userId != null) {
-            parentKey = KeyFactory.createKey(Player.class.getSimpleName(), userId);
-            Query query = new Query(Character.class.getSimpleName()).setAncestor(parentKey);
-            query.addSort("score", SortDirection.DESCENDING);
-            
-            FetchOptions options = FetchOptions.Builder.withDefaults();
-            if (max > 0) {
-                options.limit(max);
-            }
-    
-            entitiesUser = datastore.prepare(query).asList(options);
-        } else {
-            entitiesUser = new ArrayList<>();
+            entitiesUser = getTopXCharactersUser(userId, max);
         }
         
         QueryResultList<Entity> globalResult = null;
@@ -236,24 +224,13 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
         int idxUser = 0;
         
         do {
-            Query query = new Query(Character.class.getSimpleName());
-            query.addSort("score", SortDirection.DESCENDING);
-            
-            FetchOptions options = FetchOptions.Builder.withDefaults();
-            if (max > 0) {
-                options.limit(max);
-            }
-            
-            if (cursor != null) {
-                options.startCursor(cursor);
-            }
-            
-            globalResult = datastore.prepare(query).asQueryResultList(options);
+            globalResult = getTopXCharactersGlobal(max, cursor);
             cursor = globalResult.getCursor();
             
             int idxGlobal = 0;
             Character characterGlobal = null;
             Character characterUser = null;
+            CharacterComparator charCmp = new CharacterComparator();
             while (characters.size() < max 
                     && idxGlobal < globalResult.size()) {
                 
@@ -265,26 +242,14 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
                     characterUser = getCharacter(entitiesUser.get(idxUser));
                 }
                 
-                //compare scores
-                int cmp = -1;
-                if (characterUser != null) {
-                    cmp = characterUser.getScore().compareTo(
-                            characterGlobal.getScore());
-                    if (cmp == 0) {
-                        // scores are equal, so compare names
-                        cmp = characterUser.getName().compareTo(
-                                characterGlobal.getName());
-                    }
-                }
+                //compare characters
+                int cmp = charCmp.compare(characterUser, characterGlobal);
                 
-                if (cmp > 0) {
-                    characters.add(characterUser);
-                    idxUser++;
-                    characterUser = null;
-                } else if (cmp < 0) {
+                if (cmp < 0) {
                     //ignore characters from the current user because of the 
                     //eventual consistency of the global query
-                    if (!characterGlobal.getKey().getParent().equals(parentKey)) {
+                    if (!characterGlobal.getKey().getParent().getName().equals(
+                            userId)) {
                         characters.add(characterGlobal);
                     }
                     idxGlobal++;
@@ -299,5 +264,69 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
         } while (characters.size() < max && globalResult.size() >= max);
         
         return characters;
+    }
+
+    private QueryResultList<Entity> getTopXCharactersGlobal(int max, Cursor startCursor) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        QueryResultList<Entity> globalResult;
+        Query query = new Query(Character.class.getSimpleName());
+        query.addSort("score", SortDirection.DESCENDING);
+        
+        FetchOptions options = FetchOptions.Builder.withDefaults();
+        if (max > 0) {
+            options.limit(max);
+        }
+        
+        if (startCursor != null) {
+            options.startCursor(startCursor);
+        }
+        
+        globalResult = datastore.prepare(query).asQueryResultList(options);
+        return globalResult;
+    }
+
+    private List<Entity> getTopXCharactersUser(String userId, int max) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        List<Entity> entitiesUser;
+        Key parentKey = KeyFactory.createKey(Player.class.getSimpleName(), userId);
+        Query query = new Query(Character.class.getSimpleName()).setAncestor(parentKey);
+        query.addSort("score", SortDirection.DESCENDING);
+        
+        FetchOptions options = FetchOptions.Builder.withDefaults();
+        if (max > 0) {
+            options.limit(max);
+        }
+   
+        entitiesUser = datastore.prepare(query).asList(options);
+        return entitiesUser;
+    }
+    
+    class CharacterComparator implements Comparator<Character> {
+
+        @Override
+        public int compare(Character c1, Character c2) {
+            
+            if (c1 == null && c2 == null) {
+                return 0;
+            }
+            
+            if (c1 == null) {
+                return -1;
+            }
+            
+            if (c2 == null) {
+                return 1;
+            }
+            
+            int cmp = c1.getScore().compareTo(c2.getScore());
+            
+            if (cmp == 0) {
+                // scores are equal, so compare names
+                cmp = c1.getName().compareTo(c2.getName());
+            }
+
+            return cmp;
+        }
+        
     }
 }
