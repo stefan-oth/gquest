@@ -3,25 +3,46 @@ package de.oth.app.geekquest.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.appengine.api.datastore.Key;
+import com.googlecode.objectify.Key;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Ignore;
+import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Parent;
 
+@Entity
 public class Character {
-    
-    private Key key;
+
+    @Id
+    private Long id;
+    @Parent
+    private Key<Player> parent;
 	private String name;
+	@Index
 	private CharClass charClass;
+	@Index
 	private Integer health;
+	@Index
 	private Long score;
 	private String imageBlobKey;
+	@Ignore
 	private List<Mission> missions = new ArrayList<>();
-
-	public Key getKey() {
-	    return key;
-	}
 	
-	public void setKey(Key key) {
-	    this.key = key;
-	}
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    public Key<Player> getParentKey() {
+        return parent;
+    }
+    
+    public void setParentKey(Key<Player> parent) {
+        this.parent = parent;
+    }
 	
 	public String getName() {
 		return name;

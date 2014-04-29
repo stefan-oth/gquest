@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.googlecode.objectify.Key;
 
 import de.oth.app.geekquest.dao.CharacterDAO;
 import de.oth.app.geekquest.dao.DAOManager;
@@ -46,17 +46,20 @@ public class DataGenServlet extends HttpServlet{
         
         Player player = pDAO.findByUserId(user.getUserId());
         if (player == null) {
-            Key key = pDAO.create(user.getUserId());
+            Key<Player> key = pDAO.create(user.getUserId());
             player = pDAO.find(key);
         }
         
         String[] names  = getNames();
         
+        Key<Player> playerKey = Key.create(Player.class, player.getUserId()); 
+        
         for (int i = 0; i < names.length; i++) {
             int classId = (int) (Math.random() * classes.length);
             int health = MIN_HEALTH + (int) (Math.random() * (MAX_HEALTH - MIN_HEALTH));
             long score = MIN_SCORE + (long) (Math.random() * (MAX_SCORE - MIN_SCORE));
-            Key key = cDAO.create(names[i], health, classes[classId], score, player.getKey());
+            Key<Character> key = cDAO.create(names[i], health, classes[classId], score, 
+                    playerKey);
             Character character = cDAO.find(key);
             addMissions(character);
             player.addCharacter(character);
@@ -67,11 +70,15 @@ public class DataGenServlet extends HttpServlet{
     
     private void addMissions(Character character) {
         MissionDAO dao = DAOManager.getMissionDAO();
-        Key missionKey = dao.create("Destroy ring", false, character.getKey());
+        
+        Key<Character> parentKey = Key.create(character.getParentKey(), 
+                Character.class, character.getId());
+        
+        Key<Mission> missionKey = dao.create("Destroy ring", false, parentKey);
         Mission mission = dao.find(missionKey);
         character.addMissions(mission);
         
-        missionKey = dao.create("Visit Rivendell", true, character.getKey());
+        missionKey = dao.create("Visit Rivendell", true, parentKey);
         mission = dao.find(missionKey);
         character.addMissions(mission);
     }

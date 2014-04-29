@@ -6,10 +6,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.googlecode.objectify.Key;
 
 import de.oth.app.geekquest.dao.CharacterDAO;
 import de.oth.app.geekquest.dao.DAOManager;
@@ -44,7 +44,7 @@ public class SaveCharacterServlet extends HttpServlet {
 	    
 	    if (player == null) {
             System.out.println("Creating new Player");
-            Key key = playerDAO.create(user.getUserId());
+            Key<Player> key = playerDAO.create(user.getUserId());
             player = playerDAO.find(key);
 	    }
 	    
@@ -52,15 +52,22 @@ public class SaveCharacterServlet extends HttpServlet {
 	    
 	    if (character == null) {
 	        System.out.println("Creating new Character");
-	        Key key = charDAO.create(name, 10, charClass, 0l, player.getKey());
+	        
+	        Key<Player> playerKey = Key.create(Player.class, player.getUserId());
+	        
+	        Key<Character> key = charDAO.create(name, 10, charClass, 0l, playerKey);
 	        character = charDAO.find(key);
 	        if (character != null) {
-	            Key missionKey = missionDAO.create("Destroy ring", false, character.getKey());
+	            
+	            Key<Character> parentKey = Key.create(character.getParentKey(), 
+	                    Character.class, character.getId());
+	            
+	            Key<Mission> missionKey = missionDAO.create("Destroy ring", false,
+	                    parentKey);
 	            Mission mission = missionDAO.find(missionKey);
 	            character.addMissions(mission);
 	            
-                missionKey = missionDAO.create("Visit Rivendell", true,
-                        character.getKey());
+                missionKey = missionDAO.create("Visit Rivendell", true, parentKey);
                 mission = missionDAO.find(missionKey);
                 character.addMissions(mission);
 	        } else {

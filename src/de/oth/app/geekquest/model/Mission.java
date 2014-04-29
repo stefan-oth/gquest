@@ -1,10 +1,17 @@
 package de.oth.app.geekquest.model;
 
-import com.google.appengine.api.datastore.Key;
+import com.googlecode.objectify.Key;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Parent;
 
+@Entity
 public class Mission {
     
-    private Key key;
+    @Id
+    private Long id;
+    @Parent
+    private Key<Character> parent;
     private String description;
     private Boolean isAccomplished;
 
@@ -12,12 +19,16 @@ public class Mission {
         this.isAccomplished = false;
     }
     
-    public Key getKey() {
-        return key;
+    public Long getId() {
+        return id;
     }
     
-    public void setKey(Key key) {
-        this.key = key;
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    public Key<Character> getParentKey() {
+        return parent;
     }
 
     public String getDescription() {

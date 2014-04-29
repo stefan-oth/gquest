@@ -3,22 +3,18 @@ package de.oth.app.geekquest.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.appengine.api.datastore.Key;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Ignore;
 
+@Entity
 public class Player {
-    
-    private Key key;
+    @Id
+    private String name;
+    //TODO remove userId because its a redundant information?
     private String userId;
+    @Ignore
     private List<Character> characters = new ArrayList<>();
-
-    
-    public Key getKey() {
-        return key;
-    }
-    
-    public void setKey(Key key) {
-        this.key = key;
-    }
     
     public String getUserId() {
         return userId;

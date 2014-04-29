@@ -66,7 +66,7 @@ if (user != null){
         characterId = -1l;
         headline = "Create your Character";
     } else {
-        characterId = character.getKey().getId();
+        characterId = character.getId();
         headline = "Edit your Character";
         if (character.getImageBlobKey() != null) {
             BlobKey blobKey = new BlobKey(character.getImageBlobKey());

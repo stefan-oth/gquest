@@ -8,15 +8,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.dev.HighRepJobPolicy;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.googlecode.objectify.Key;
 
 import de.oth.app.geekquest.dao.CharacterDAO;
+import de.oth.app.geekquest.dao.DAOManager;
 import de.oth.app.geekquest.dao.PlayerDAO;
 import de.oth.app.geekquest.model.CharClass;
 import de.oth.app.geekquest.model.Character;
+import de.oth.app.geekquest.model.Player;
 
 public class HighscoreQueryConsistencyTest {
 
@@ -24,7 +26,7 @@ public class HighscoreQueryConsistencyTest {
         private static boolean enabled = true;
         
         @Override
-        public boolean shouldApplyNewJob(Key entityGroup) {
+        public boolean shouldApplyNewJob(com.google.appengine.api.datastore.Key entityGroup) {
             
             if (!enabled) {
                 return true;
@@ -35,7 +37,7 @@ public class HighscoreQueryConsistencyTest {
         }
 
         @Override
-        public boolean shouldRollForwardExistingJob(Key entityGroup) {
+        public boolean shouldRollForwardExistingJob(com.google.appengine.api.datastore.Key entityGroup) {
             if (!enabled) {
                 return true;
             }
@@ -57,8 +59,8 @@ public class HighscoreQueryConsistencyTest {
             new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
                .setAlternateHighRepJobPolicyClass(CustomHighRepJobPolicy.class));
     
-    private PlayerDAO pDAO = new PlayerDAOImplDatastore();
-    private CharacterDAO cDAO = new CharacterDAOImplDatastore();
+    private PlayerDAO pDAO = DAOManager.getPlayerDAO();
+    private CharacterDAO cDAO = DAOManager.getCharacterDAO();
 
     @Before
     public void setUp() {
@@ -78,8 +80,8 @@ public class HighscoreQueryConsistencyTest {
         String[] expectedName =  {"Istiny", "Ardar", "Frodo", "Etniss", "Undny", 
                 "Ashecho", "Sam", "Ghaeni", "Kelbur", "Danmor"};
         
-        Key player1 = pDAO.create("1234");
-        Key player2 = pDAO.create("4567");
+        Key<Player> player1 = pDAO.create("1234");
+        Key<Player> player2 = pDAO.create("4567");
         
         cDAO.create("Frodo", 10, CharClass.Hobbit, 999l, player1);
         cDAO.create("Sam", 8, CharClass.Hobbit, 500l, player1);
@@ -112,8 +114,8 @@ public class HighscoreQueryConsistencyTest {
         String[] expectedName =  {"Ardar", "Frodo", "Etniss", 
                 "Ashecho", "Sam", "Ghaeni", "Kelbur", "Danmor", "Estost", "Neroth"};
         
-        Key player1 = pDAO.create("1234");
-        Key player2 = pDAO.create("4567");
+        Key<Player> player1 = pDAO.create("1234");
+        Key<Player> player2 = pDAO.create("4567");
         
         cDAO.create("Frodo", 10, CharClass.Hobbit, 999l, player1);
         cDAO.create("Sam", 8, CharClass.Hobbit, 500l, player1);
@@ -149,8 +151,8 @@ public class HighscoreQueryConsistencyTest {
         String[] expectedNameAfter =  {"Ardar", "Frodo", "Etniss", 
                 "Ashecho", "Sam", "Ghaeni", "Kelbur", "Istiny", "Danmor", "Estost"};
         
-        Key player1 = pDAO.create("1234");
-        Key player2 = pDAO.create("4567");
+        Key<Player> player1 = pDAO.create("1234");
+        Key<Player> player2 = pDAO.create("4567");
         
         cDAO.create("Frodo", 10, CharClass.Hobbit, 999l, player1);
         cDAO.create("Sam", 8, CharClass.Hobbit, 500l, player1);
@@ -162,7 +164,7 @@ public class HighscoreQueryConsistencyTest {
         cDAO.create("Neroth", 14, CharClass.Hobbit, 54l, player1);
         cDAO.create("Estost", 6, CharClass.Elf, 100l, player1);
         cDAO.create("Ardar", 8, CharClass.Mage, 10000l, player1);
-        Key key = cDAO.create("Istiny", 14, CharClass.Elf, 0l, player2);
+        Key<Character> key = cDAO.create("Istiny", 14, CharClass.Elf, 0l, player2);
         
         List<Character> actualTopX = dao.getTopXCharacters("4567", topX);
         
@@ -194,8 +196,8 @@ public class HighscoreQueryConsistencyTest {
         String[] expectedName = {"Ardar", "Frodo", "Etniss", 
                 "Ashecho", "Sam", "Ghaeni", "Kelbur", "Danmor", "Estost", "Neroth"};
         
-        Key player1 = pDAO.create("1234");
-        Key player2 = pDAO.create("4567");
+        Key<Player> player1 = pDAO.create("1234");
+        Key<Player> player2 = pDAO.create("4567");
         
         cDAO.create("Frodo", 10, CharClass.Hobbit, 999l, player1);
         cDAO.create("Sam", 8, CharClass.Hobbit, 500l, player1);
@@ -207,7 +209,7 @@ public class HighscoreQueryConsistencyTest {
         cDAO.create("Neroth", 14, CharClass.Hobbit, 54l, player1);
         cDAO.create("Estost", 6, CharClass.Elf, 100l, player1);
         cDAO.create("Ardar", 8, CharClass.Mage, 10000l, player1);
-        Key key = cDAO.create("Istiny", 14, CharClass.Elf, 0l, player2);
+        Key<Character> key = cDAO.create("Istiny", 14, CharClass.Elf, 0l, player2);
         
         List<Character> actualTopX = dao.getTopXCharacters("0000", topX);
         
@@ -241,8 +243,8 @@ public class HighscoreQueryConsistencyTest {
         String[] expectedNameAfter =  {"Ardar", "Istiny", "Frodo", "Etniss", 
                 "Ashecho", "Sam", "Ghaeni", "Kelbur", "Danmor", "Estost"};
         
-        Key player1 = pDAO.create("1234");
-        Key player2 = pDAO.create("4567");
+        Key<Player> player1 = pDAO.create("1234");
+        Key<Player> player2 = pDAO.create("4567");
         
         cDAO.create("Frodo", 10, CharClass.Hobbit, 999l, player1);
         cDAO.create("Sam", 8, CharClass.Hobbit, 500l, player1);
@@ -254,7 +256,7 @@ public class HighscoreQueryConsistencyTest {
         cDAO.create("Neroth", 14, CharClass.Hobbit, 54l, player1);
         cDAO.create("Estost", 6, CharClass.Elf, 100l, player1);
         cDAO.create("Ardar", 8, CharClass.Mage, 10000l, player1);
-        Key key = cDAO.create("Istiny", 14, CharClass.Elf, 299l, player2);
+        Key<Character> key = cDAO.create("Istiny", 14, CharClass.Elf, 299l, player2);
         
         List<Character> actualTopX = dao.getTopXCharacters("4567", topX);
         
@@ -286,8 +288,8 @@ public class HighscoreQueryConsistencyTest {
         String[] expectedName = {"Ardar", "Frodo", "Etniss", 
                 "Ashecho", "Sam", "Ghaeni", "Kelbur", "Istiny", "Danmor", "Estost"};
         
-        Key player1 = pDAO.create("1234");
-        Key player2 = pDAO.create("4567");
+        Key<Player> player1 = pDAO.create("1234");
+        Key<Player> player2 = pDAO.create("4567");
         
         CustomHighRepJobPolicy.disable();
         
@@ -301,7 +303,7 @@ public class HighscoreQueryConsistencyTest {
         cDAO.create("Neroth", 14, CharClass.Hobbit, 54l, player1);
         cDAO.create("Estost", 6, CharClass.Elf, 100l, player1);
         cDAO.create("Ardar", 8, CharClass.Mage, 10000l, player1);
-        Key key = cDAO.create("Istiny", 14, CharClass.Elf, 299l, player2);
+        Key<Character> key = cDAO.create("Istiny", 14, CharClass.Elf, 299l, player2);
         
         List<Character> actualTopX = dao.getTopXCharacters("0000", topX);
         actualTopX = dao.getTopXCharacters("0000", topX);
@@ -338,8 +340,8 @@ public class HighscoreQueryConsistencyTest {
         String[] expectedNameBefore =  {"Ardar", "Frodo", "Etniss", 
                 "Ashecho", "Sam", "Ghaeni", "Kelbur", "Istiny", "Danmor", "Estost"};
         
-        Key player1 = pDAO.create("1234");
-        Key player2 = pDAO.create("4567");
+        Key<Player> player1 = pDAO.create("1234");
+        Key<Player> player2 = pDAO.create("4567");
         
         cDAO.create("Frodo", 10, CharClass.Hobbit, 999l, player1);
         cDAO.create("Sam", 8, CharClass.Hobbit, 500l, player1);
@@ -351,7 +353,7 @@ public class HighscoreQueryConsistencyTest {
         cDAO.create("Neroth", 14, CharClass.Hobbit, 54l, player1);
         cDAO.create("Estost", 6, CharClass.Elf, 100l, player1);
         cDAO.create("Ardar", 8, CharClass.Mage, 10000l, player1);
-        Key key = cDAO.create("Istiny", 14, CharClass.Elf, 299l, player2);
+        Key<Character> key = cDAO.create("Istiny", 14, CharClass.Elf, 299l, player2);
         
         List<Character> actualTopX = dao.getTopXCharacters("4567", topX);
         
@@ -383,8 +385,8 @@ public class HighscoreQueryConsistencyTest {
         String[] expectedName = {"Ardar", "Frodo", "Etniss", 
                 "Ashecho", "Sam", "Ghaeni", "Kelbur", "Istiny", "Danmor", "Estost"};
         
-        Key player1 = pDAO.create("1234");
-        Key player2 = pDAO.create("4567");
+        Key<Player> player1 = pDAO.create("1234");
+        Key<Player> player2 = pDAO.create("4567");
         
         CustomHighRepJobPolicy.disable();
         
@@ -398,7 +400,7 @@ public class HighscoreQueryConsistencyTest {
         cDAO.create("Neroth", 14, CharClass.Hobbit, 54l, player1);
         cDAO.create("Estost", 6, CharClass.Elf, 100l, player1);
         cDAO.create("Ardar", 8, CharClass.Mage, 10000l, player1);
-        Key key = cDAO.create("Istiny", 14, CharClass.Elf, 299l, player2);
+        Key<Character> key = cDAO.create("Istiny", 14, CharClass.Elf, 299l, player2);
         
         List<Character> actualTopX = dao.getTopXCharacters("0000", topX);
         

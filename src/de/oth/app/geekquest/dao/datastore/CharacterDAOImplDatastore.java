@@ -5,16 +5,11 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.google.appengine.api.datastore.Cursor;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.datastore.QueryResultList;
+import com.google.appengine.api.datastore.QueryResultIterator;
+import com.googlecode.objectify.Key;
+import com.googlecode.objectify.Objectify;
+import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.cmd.Query;
 
 import de.oth.app.geekquest.dao.CharacterDAO;
 import de.oth.app.geekquest.dao.DAOManager;
@@ -28,90 +23,84 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
 
     @Override
     public void delete(Character character) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Objectify ofy = ObjectifyService.ofy();
         
-        if (character.getKey() == null) {
-            System.out.println("Delete - Character key is null");
+        if (character.getId() == null) {
+            System.out.println("Delete - Character id is null");
             return;
         }
         
-        Key key = character.getKey();
+        if (character.getParentKey() == null) {
+            System.out.println("Delete - Character parentKey is null");
+            return;
+        }
         
-        datastore.delete(key);
+        Key<Character> key = Key.create(character.getParentKey(), Character.class, 
+                character.getId());
+        
+        ofy.delete().key(key);
     }
 
+    //TODO rename to save
     @Override
     public void update(Character character) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        
-        if (character.getKey() == null) {
-            System.out.println("Update - Character key is null");
-            return;
-        }
-        
-        Entity entity = getEntity(character, character.getKey().getParent());
+        Objectify ofy = ObjectifyService.ofy();
 
-        datastore.put(entity);
+        ofy.save().entity(character).now();
     }
 
     @Override
-    public Key create(String name, Integer health, CharClass charClass, Long score, 
-            Key parentKey) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    public Key<Character> create(String name, Integer health, CharClass charClass, Long score, 
+            Key<Player> parentKey) {
         
-        Entity entity = new Entity(Character.class.getSimpleName(), parentKey);
+        Character character = new Character();
+        character.setName(name);
+        character.setHealth(health);
+        character.setCharClass(charClass);
+        character.setScore(score);
+        character.setParentKey(parentKey);
 
-        entity.setProperty("name", name);
-        entity.setProperty("health", health);
-        entity.setProperty("charClass", charClass.toString());
-        entity.setProperty("score", score);
-
-        Key key = datastore.put(entity);
+        update(character);
+        
+        Key<Character> key = Key.create(character.getParentKey(), Character.class, 
+                character.getId());
         
         return key;
     }
 
     @Override
-    public Character find(Key key) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    public Character find(Key<Character> key) {
         MissionDAO missionsDAO = DAOManager.getMissionDAO();
+        Objectify ofy = ObjectifyService.ofy();
         
-        try {
-            Entity entity = datastore.get(key);
-            Character character = getCharacter(entity);
-            
-            List<Mission> missions = missionsDAO.findByParent(key);
-            
-            character.setMissions(missions);
-            
-            return character;
-        } catch (EntityNotFoundException e) {
-            // TODO error log?
-            return null;
-        }
+        Character character = ofy.load().key(key).now();
+
+        List<Mission> missions = missionsDAO.findByParent(key);
+
+        character.setMissions(missions);
+
+        return character;
     }
 
     @Override
     public Character find(Long id, String userId) {
-        Key parentKey = KeyFactory.createKey(Player.class.getSimpleName(), userId);
-        Key key = KeyFactory.createKey(parentKey, Character.class.getSimpleName(), id);
+        Key<Player> parentKey = Key.create(Player.class, userId);
+        Key<Character> key = Key.create(parentKey, Character.class, id);
         return find(key);
     }
     
     @Override
-    public List<Character> findByParent(Key parentKey) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    public List<Character> findByParent(Key<Player> parentKey) {
+        Objectify ofy = ObjectifyService.ofy();
         MissionDAO missionsDAO = DAOManager.getMissionDAO();
         
-        Query query = new Query(Character.class.getSimpleName()).setAncestor(parentKey);
-
-        List<Entity> entities = datastore.prepare(query).asList(
-                FetchOptions.Builder.withDefaults());
+        List<Character> characters = ofy.load().type(Character.class).ancestor(
+                parentKey).list();
         
-        List<Character> characters = new ArrayList<>();
-        for (Entity entity : entities) {
-            Character character = getCharacter(entity);
-            List<Mission> missions = missionsDAO.findByParent(entity.getKey());
+        for (Character character : characters) {
+            Key<Character> key = Key.create(character.getParentKey(), Character.class, 
+                    character.getId());
+            List<Mission> missions = missionsDAO.findByParent(key);
             character.setMissions(missions);
             characters.add(character);
         }
@@ -121,59 +110,28 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
     
     @Override
     public List<Character> findByUserId(String userId) {
-        Key parentKey = KeyFactory.createKey(Player.class.getSimpleName(), userId);
+        Key<Player> parentKey = Key.create(Player.class, userId);
         return findByParent(parentKey);
     }
     
     @Override
     public Character findFirstByUserId(String userId) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Objectify ofy = ObjectifyService.ofy();
         MissionDAO missionsDAO = DAOManager.getMissionDAO();
         
-        Key parentKey = KeyFactory.createKey(Player.class.getSimpleName(), userId);
+        Key<Player> parentKey = Key.create(Player.class, userId);
         
-        Query query = new Query(Character.class.getSimpleName()).setAncestor(parentKey);
+        Character character = ofy.load().type(Character.class).ancestor(
+                parentKey).first().now();
 
-        List<Entity> entities = datastore.prepare(query).asList(
-                FetchOptions.Builder.withDefaults().limit(1));
-        
-        Character character = null;
-        if ( entities != null && entities.size() > 0) {
-            character = getCharacter(entities.get(0));
-            List<Mission> missions = missionsDAO.findByParent(entities.get(0).getKey());
+        if ( character != null) {
+            Key<Character> key = Key.create(character.getParentKey(), Character.class, 
+                    character.getId());
+            List<Mission> missions = missionsDAO.findByParent(key);
             character.setMissions(missions);
         }
         
         return character;
-    }
-    
-    private Character getCharacter(Entity entity) {
-        Character character = new Character();
-        character.setKey(entity.getKey());
-        character.setName((String) entity.getProperty("name"));
-        character.setHealth(((Long) entity.getProperty("health")).intValue());
-        character.setCharClass(CharClass.valueOf((String) entity.getProperty("charClass")));
-        character.setScore((Long) entity.getProperty("score"));
-        character.setImageBlobKey((String) entity.getProperty("imageBlobKey"));
-        character.setMissions(new ArrayList<Mission>());
-        
-        return character;
-    }
-    
-    private Entity getEntity(Character character, Key parentKey) {
-        Entity entity = new Entity(Character.class.getSimpleName(), parentKey);
-        if (character.getKey() == null) {
-            entity = new Entity(Character.class.getSimpleName(), parentKey);
-        } else {
-            entity = new Entity(character.getKey());
-        }
-        entity.setProperty("name", character.getName());
-        entity.setProperty("health", character.getHealth());
-        entity.setProperty("charClass", character.getCharClass().toString());
-        entity.setProperty("score", character.getScore());
-        entity.setProperty("imageBlobKey", character.getImageBlobKey());
-        
-        return entity;
     }
 
     /**
@@ -181,27 +139,21 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
      */
     @Override
     public List<Character> getCharactersForHighscore(int max, int offset) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        List<Character> characters = new ArrayList<>();
+        Objectify ofy = ObjectifyService.ofy();
+        Query<Character> query = ofy.load().type(Character.class);
         
-        Query query = new Query(Character.class.getSimpleName());
-        query.addSort("score", SortDirection.DESCENDING);
+        //sort by score descending
+        query = query.order("-score");
         
-        FetchOptions options = FetchOptions.Builder.withDefaults();
         if (max > 0) {
-            options.limit(max);
+            query = query.limit(max);
         }
         
         if (offset > 0) {
-            options.offset(offset);
+            query = query.offset(offset);
         }
         
-        List<Entity> entities = datastore.prepare(query).asList(options);
-        
-        for (Entity entity : entities) {
-            Character character = getCharacter(entity);
-            characters.add(character);
-        }
+        List<Character> characters = query.list();
         
         return characters;
     }
@@ -213,46 +165,49 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
     @Override
     public List<Character> getTopXCharacters(String userId, int max) {
         List<Character> characters = new ArrayList<>();   
-        List<Entity> entitiesUser =  new ArrayList<>();
+        List<Character> entitiesUser =  new ArrayList<>();
         
         if (userId != null) {
             entitiesUser = getTopXCharactersUser(userId, max);
         }
         
-        QueryResultList<Entity> globalResult = null;
+        QueryResultIterator<Character> globalResult = null;
         Cursor cursor = null;
         int idxUser = 0;
+        boolean endReached = false;
         
         do {
+            endReached = true;
             globalResult = getTopXCharactersGlobal(max, cursor);
-            cursor = globalResult.getCursor();
             
-            int idxGlobal = 0;
             Character characterGlobal = null;
             Character characterUser = null;
             CharacterComparator charCmp = new CharacterComparator();
+            
             while (characters.size() < max 
-                    && idxGlobal < globalResult.size()) {
+                    && globalResult.hasNext()) {
                 
-                if (characterGlobal == null && idxGlobal < globalResult.size()) {
-                    characterGlobal = getCharacter(globalResult.get(idxGlobal));
+                endReached = false;
+                
+                if (characterGlobal == null && globalResult.hasNext()) {
+                    characterGlobal = globalResult.next();
+                    //ignore characters from the current user because of the 
+                    //eventual consistency of the global query
+                    if (characterGlobal.getParentKey().getName().equals(userId)) {
+                        characterGlobal = null;
+                        continue;
+                    }
                 }
                 
                 if (characterUser == null && idxUser < entitiesUser.size()) {
-                    characterUser = getCharacter(entitiesUser.get(idxUser));
+                    characterUser = entitiesUser.get(idxUser);
                 }
                 
                 //compare characters
                 int cmp = charCmp.compare(characterUser, characterGlobal);
                 
                 if (cmp < 0) {
-                    //ignore characters from the current user because of the 
-                    //eventual consistency of the global query
-                    if (!characterGlobal.getKey().getParent().getName().equals(
-                            userId)) {
-                        characters.add(characterGlobal);
-                    }
-                    idxGlobal++;
+                    characters.add(characterGlobal);
                     characterGlobal = null;
                 } else  {
                     characters.add(characterUser);
@@ -260,45 +215,51 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
                     characterUser = null;
                 }
             }
+            
+            cursor = globalResult.getCursor();
         
-        } while (characters.size() < max && globalResult.size() >= max);
+        } while (characters.size() < max && !endReached);
         
         return characters;
     }
 
-    private QueryResultList<Entity> getTopXCharactersGlobal(int max, Cursor startCursor) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        QueryResultList<Entity> globalResult;
-        Query query = new Query(Character.class.getSimpleName());
-        query.addSort("score", SortDirection.DESCENDING);
+    private QueryResultIterator<Character> getTopXCharactersGlobal(int max, 
+            Cursor startCursor) {
         
-        FetchOptions options = FetchOptions.Builder.withDefaults();
+        Objectify ofy = ObjectifyService.ofy();
+        
+        Query<Character> query = ofy.load().type(Character.class);
+        
+        //sort by score descending
+        query = query.order("-score");
+        
         if (max > 0) {
-            options.limit(max);
+            query = query.limit(max);
         }
         
         if (startCursor != null) {
-            options.startCursor(startCursor);
+            query = query.startAt(startCursor);
         }
         
-        globalResult = datastore.prepare(query).asQueryResultList(options);
-        return globalResult;
+        return query.iterator();
     }
 
-    private List<Entity> getTopXCharactersUser(String userId, int max) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        List<Entity> entitiesUser;
-        Key parentKey = KeyFactory.createKey(Player.class.getSimpleName(), userId);
-        Query query = new Query(Character.class.getSimpleName()).setAncestor(parentKey);
-        query.addSort("score", SortDirection.DESCENDING);
+    private List<Character> getTopXCharactersUser(String userId, int max) {
+        Objectify ofy = ObjectifyService.ofy();
         
-        FetchOptions options = FetchOptions.Builder.withDefaults();
+        Key<Player> parentKey = Key.create(Player.class, userId);
+        Query<Character> query = ofy.load().type(Character.class).ancestor(parentKey);
+        
+        //sort by score descending
+        query = query.order("-score");
+        
         if (max > 0) {
-            options.limit(max);
+            query = query.limit(max);
         }
-   
-        entitiesUser = datastore.prepare(query).asList(options);
-        return entitiesUser;
+        
+        List<Character> characters = query.list();
+        
+        return characters;
     }
     
     class CharacterComparator implements Comparator<Character> {
