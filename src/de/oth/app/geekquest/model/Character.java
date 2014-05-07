@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.googlecode.objectify.Key;
+import com.googlecode.objectify.annotation.AlsoLoad;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Ignore;
@@ -17,16 +18,25 @@ public class Character {
     private Long id;
     @Parent
     private Key<Player> parent;
-	private String name;
+    @AlsoLoad("name")
+	private String nickName;
 	@Index
 	private CharClass charClass;
 	@Index
 	private Integer health;
 	@Index
 	private Long score;
+	private Long gold;
 	private String imageBlobKey;
+	
 	@Ignore
 	private List<Mission> missions = new ArrayList<>();
+	
+	public Character() {
+	    this.gold = 0l;
+	    this.score = 0l;
+	    this.health = 10;
+	}
 	
     public Long getId() {
         return id;
@@ -44,12 +54,12 @@ public class Character {
         this.parent = parent;
     }
 	
-	public String getName() {
-		return name;
+	public String getNickName() {
+		return nickName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setNickName(String name) {
+		this.nickName = name;
 	}
 
 	public CharClass getCharClass() {
@@ -76,7 +86,6 @@ public class Character {
 	    this.imageBlobKey = imageBlobKey;
 	}
 	
-
 	public List<Mission> getMissions() {
 		return missions;
 	}
@@ -103,5 +112,21 @@ public class Character {
 
     public void setScore(Long score) {
         this.score = score;
+    }
+    
+    public Long getGold() {
+        return gold;
+    }
+    
+    public void setGold(long gold) {
+        this.gold = gold;
+    }
+    
+    public void earn(long gold) {
+        this.gold += gold;
+    }
+    
+    public void spend(long gold) {
+        this.gold -= gold;
     }
 }

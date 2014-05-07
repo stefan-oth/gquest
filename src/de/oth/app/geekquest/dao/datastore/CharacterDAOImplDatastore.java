@@ -54,7 +54,7 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
             Key<Player> parentKey) {
         
         Character character = new Character();
-        character.setName(name);
+        character.setNickName(name);
         character.setHealth(health);
         character.setCharClass(charClass);
         character.setScore(score);
@@ -283,7 +283,7 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
             
             if (cmp == 0) {
                 // scores are equal, so compare names
-                cmp = c1.getName().compareTo(c2.getName());
+                cmp = c1.getNickName().compareTo(c2.getNickName());
             }
 
             return cmp;

@@ -70,7 +70,7 @@ if (user != null) {
         </tr>
 <% for (Character character : characters) {%>
         <tr> 
-          <td><%=character.getName()%></td>
+          <td><%=character.getNickName()%></td>
           <td><%=character.getCharClass().toString()%></td>
           <td><%=character.getScore()%></td>
         </tr> 

@@ -78,8 +78,8 @@ public class SaveCharacterServlet extends HttpServlet {
             System.out.println("Updating existing Character for current user " + user.toString() 
                     + " with characterId " + charId);
             boolean changed = false;
-            if (!name.equals(character.getName())) {
-                character.setName(name);
+            if (!name.equals(character.getNickName())) {
+                character.setNickName(name);
                 changed = true;
             }
 

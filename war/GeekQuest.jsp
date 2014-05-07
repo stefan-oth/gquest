@@ -79,8 +79,8 @@ if (user != null){
     if (hobbitName != null && !hobbitName.equals("")) {
         name = hobbitName;
         character.setCharClass(CharClass.Hobbit);
-    } else if (character.getName() != null) {
-        name = character.getName();
+    } else if (character.getNickName() != null) {
+        name = character.getNickName();
     }
 }
 %>
@@ -127,6 +127,10 @@ if (user != null){
     <tr>
       <td><label for="Health">Health status:</label></td>
       <td><label for="Healthvalue"><%= character.getHealth() != null ? character.getHealth() : "" %></label></td>
+    </tr>
+    <tr>
+      <td><label for="Gold">Gold:</label></td>
+      <td><label for="Goldvalue"><%= character.getGold() != null ? character.getGold() : "" %></label></td>
     </tr>
     <tr>
       <td><label for="Score">Score:</label></td>

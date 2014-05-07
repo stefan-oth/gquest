@@ -20,6 +20,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
         <servlet-name>GenData</servlet-name>
         <servlet-class>de.oth.app.geekquest.DataGenServlet</servlet-class>
     </servlet>
+     <servlet>
+        <servlet-name>MigrateData</servlet-name>
+        <servlet-class>de.oth.app.geekquest.DataMigrationServlet</servlet-class>
+    </servlet>
     <servlet>
         <servlet-name>Upload</servlet-name>
         <servlet-class>de.oth.app.geekquest.UploadImageServlet</servlet-class>
@@ -48,6 +52,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet-mapping>
         <servlet-name>GenData</servlet-name>
         <url-pattern>/gendata</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MigrateData</servlet-name>
+        <url-pattern>/migrate</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Upload</servlet-name>

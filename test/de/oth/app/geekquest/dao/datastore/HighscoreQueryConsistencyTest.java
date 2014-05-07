@@ -103,7 +103,7 @@ public class HighscoreQueryConsistencyTest {
         assertEquals(topX, actualTopX.size());
         
         for (int i = 0; i < topX; i++) {
-            assertEquals(expectedName[i], actualTopX.get(i).getName());
+            assertEquals(expectedName[i], actualTopX.get(i).getNickName());
         }
     }
     
@@ -136,7 +136,7 @@ public class HighscoreQueryConsistencyTest {
         assertEquals(topX, actualTopX.size());
         
         for (int i = 0; i < topX; i++) {
-            assertEquals(expectedName[i], actualTopX.get(i).getName());
+            assertEquals(expectedName[i], actualTopX.get(i).getNickName());
         }
     }
     
@@ -171,7 +171,7 @@ public class HighscoreQueryConsistencyTest {
         assertEquals(topX, actualTopX.size());
         
         for (int i = 0; i < topX; i++) {
-            assertEquals(expectedNameBefore[i], actualTopX.get(i).getName());
+            assertEquals(expectedNameBefore[i], actualTopX.get(i).getNickName());
         }
         
         Character character = dao.find(key);
@@ -183,7 +183,7 @@ public class HighscoreQueryConsistencyTest {
         assertEquals(topX, actualTopX.size());
         
         for (int i = 0; i < topX; i++) {
-            assertEquals(expectedNameAfter[i], actualTopX.get(i).getName());
+            assertEquals(expectedNameAfter[i], actualTopX.get(i).getNickName());
         }
     }
     
@@ -216,7 +216,7 @@ public class HighscoreQueryConsistencyTest {
         assertEquals(topX, actualTopX.size());
         
         for (int i = 0; i < topX; i++) {
-            assertEquals(expectedName[i], actualTopX.get(i).getName());
+            assertEquals(expectedName[i], actualTopX.get(i).getNickName());
         }
         
         Character character = dao.find(key);
@@ -228,7 +228,7 @@ public class HighscoreQueryConsistencyTest {
         assertEquals(topX, actualTopX.size());
         
         for (int i = 0; i < topX; i++) {
-            assertEquals(expectedName[i], actualTopX.get(i).getName());
+            assertEquals(expectedName[i], actualTopX.get(i).getNickName());
         }
     }
     
@@ -263,7 +263,7 @@ public class HighscoreQueryConsistencyTest {
         assertEquals(topX, actualTopX.size());
         
         for (int i = 0; i < topX; i++) {
-            assertEquals(expectedNameBefore[i], actualTopX.get(i).getName());
+            assertEquals(expectedNameBefore[i], actualTopX.get(i).getNickName());
         }
         
         Character character = dao.find(key);
@@ -275,7 +275,7 @@ public class HighscoreQueryConsistencyTest {
         assertEquals(topX, actualTopX.size());
         
         for (int i = 0; i < topX; i++) {
-            assertEquals(expectedNameAfter[i], actualTopX.get(i).getName());
+            assertEquals(expectedNameAfter[i], actualTopX.get(i).getNickName());
         }
     }
     
@@ -311,7 +311,7 @@ public class HighscoreQueryConsistencyTest {
         assertEquals(topX, actualTopX.size());
         
         for (int i = 0; i < topX; i++) {
-            assertEquals(expectedName[i], actualTopX.get(i).getName());
+            assertEquals(expectedName[i], actualTopX.get(i).getNickName());
         }
         
         CustomHighRepJobPolicy.enable();
@@ -325,7 +325,7 @@ public class HighscoreQueryConsistencyTest {
         assertEquals(topX, actualTopX.size());
         
         for (int i = 0; i < topX; i++) {
-            assertEquals(expectedName[i], actualTopX.get(i).getName());
+            assertEquals(expectedName[i], actualTopX.get(i).getNickName());
         }
     }
     
@@ -360,7 +360,7 @@ public class HighscoreQueryConsistencyTest {
         assertEquals(topX, actualTopX.size());
         
         for (int i = 0; i < topX; i++) {
-            assertEquals(expectedNameBefore[i], actualTopX.get(i).getName());
+            assertEquals(expectedNameBefore[i], actualTopX.get(i).getNickName());
         }
         
         Character character = dao.find(key);
@@ -372,7 +372,7 @@ public class HighscoreQueryConsistencyTest {
         assertEquals(topX, actualTopX.size());
         
         for (int i = 0; i < topX; i++) {
-            assertEquals(expectedNameAfter[i], actualTopX.get(i).getName());
+            assertEquals(expectedNameAfter[i], actualTopX.get(i).getNickName());
         }
     }
     
@@ -407,7 +407,7 @@ public class HighscoreQueryConsistencyTest {
         assertEquals(topX, actualTopX.size());
         
         for (int i = 0; i < topX; i++) {
-            assertEquals(expectedName[i], actualTopX.get(i).getName());
+            assertEquals(expectedName[i], actualTopX.get(i).getNickName());
         }
         
         CustomHighRepJobPolicy.enable();
@@ -421,7 +421,7 @@ public class HighscoreQueryConsistencyTest {
         assertEquals(topX, actualTopX.size());
         
         for (int i = 0; i < topX; i++) {
-            assertEquals(expectedName[i], actualTopX.get(i).getName());
+            assertEquals(expectedName[i], actualTopX.get(i).getNickName());
         }
     }
     
