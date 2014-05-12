@@ -14,10 +14,12 @@ import com.googlecode.objectify.cmd.Query;
 import de.oth.app.geekquest.dao.CharacterDAO;
 import de.oth.app.geekquest.dao.DAOManager;
 import de.oth.app.geekquest.dao.MissionDAO;
+import de.oth.app.geekquest.dao.PotionDAO;
 import de.oth.app.geekquest.model.CharClass;
 import de.oth.app.geekquest.model.Character;
 import de.oth.app.geekquest.model.Mission;
 import de.oth.app.geekquest.model.Player;
+import de.oth.app.geekquest.model.Potion;
 
 public class CharacterDAOImplDatastore implements CharacterDAO {
 
@@ -50,7 +52,7 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
     }
 
     @Override
-    public Key<Character> create(String name, Integer health, CharClass charClass, Long score, 
+    public Key<Character> create(String name, Long health, CharClass charClass, Long score, 
             Key<Player> parentKey) {
         
         Character character = new Character();
@@ -71,13 +73,16 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
     @Override
     public Character find(Key<Character> key) {
         MissionDAO missionsDAO = DAOManager.getMissionDAO();
+        PotionDAO potionDAO = DAOManager.getPotionDAO();
         Objectify ofy = ObjectifyService.ofy();
         
         Character character = ofy.load().key(key).now();
 
         List<Mission> missions = missionsDAO.findByParent(key);
-
         character.setMissions(missions);
+        
+        List<Potion> potions = potionDAO.findByParent(key);
+        character.setPotions(potions);
 
         return character;
     }
@@ -93,6 +98,7 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
     public List<Character> findByParent(Key<Player> parentKey) {
         Objectify ofy = ObjectifyService.ofy();
         MissionDAO missionsDAO = DAOManager.getMissionDAO();
+        PotionDAO potionDAO = DAOManager.getPotionDAO();
         
         List<Character> characters = ofy.load().type(Character.class).ancestor(
                 parentKey).list();
@@ -102,6 +108,10 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
                     character.getId());
             List<Mission> missions = missionsDAO.findByParent(key);
             character.setMissions(missions);
+            
+            List<Potion> potions = potionDAO.findByParent(key);
+            character.setPotions(potions);
+            
             characters.add(character);
         }
         
@@ -118,6 +128,7 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
     public Character findFirstByUserId(String userId) {
         Objectify ofy = ObjectifyService.ofy();
         MissionDAO missionsDAO = DAOManager.getMissionDAO();
+        PotionDAO potionDAO = DAOManager.getPotionDAO();
         
         Key<Player> parentKey = Key.create(Player.class, userId);
         
@@ -129,6 +140,9 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
                     character.getId());
             List<Mission> missions = missionsDAO.findByParent(key);
             character.setMissions(missions);
+            
+            List<Potion> potions = potionDAO.findByParent(key);
+            character.setPotions(potions);
         }
         
         return character;

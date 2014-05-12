@@ -11,7 +11,7 @@ import de.oth.app.geekquest.model.Player;
 public interface CharacterDAO {
     public void delete(Character character);
     public void update(Character character);
-    public Key<Character> create(String name, Integer health, CharClass charClass, Long score, 
+    public Key<Character> create(String name, Long health, CharClass charClass, Long score, 
             Key<Player> parentKey);
     public Character find(Key<Character> key);
     public Character find(Long id, String userId);

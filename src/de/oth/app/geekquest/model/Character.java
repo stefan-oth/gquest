@@ -13,6 +13,8 @@ import com.googlecode.objectify.annotation.Parent;
 
 @Entity
 public class Character {
+    
+    public static final long MAX_HEALTH = 20;
 
     @Id
     private Long id;
@@ -23,7 +25,7 @@ public class Character {
 	@Index
 	private CharClass charClass;
 	@Index
-	private Integer health;
+	private Long health;
 	@Index
 	private Long score;
 	private Long gold;
@@ -31,11 +33,13 @@ public class Character {
 	
 	@Ignore
 	private List<Mission> missions = new ArrayList<>();
+	@Ignore
+	private List<Potion> potions = new ArrayList<>();
 	
 	public Character() {
 	    this.gold = 0l;
 	    this.score = 0l;
-	    this.health = 10;
+	    this.health = 10l;
 	}
 	
     public Long getId() {
@@ -70,11 +74,11 @@ public class Character {
 		this.charClass = charClass;
 	}
 
-	public Integer getHealth() {
+	public Long getHealth() {
 		return health;
 	}
 
-	public void setHealth(Integer health) {
+	public void setHealth(long health) {
 		this.health = health;
 	}
 	
@@ -97,12 +101,24 @@ public class Character {
 	public void addMissions(Mission mission) {
 		this.missions.add(mission);
 	}
+	
+	public List<Potion> getPotions() {
+	    return potions;
+	}
+	
+	public void setPotions(List<Potion> potions) {
+	    this.potions = potions;
+	}
+	
+	public void addPotion(Potion potion) {
+	    this.potions.add(potion);
+	}
 
-	public void heal(int points) {
+	public void heal(long points) {
 		setHealth(getHealth() + points);
 	}
 
-	public void hurt(int points) {
+	public void hurt(long points) {
 		setHealth(getHealth() - points);
 	}
 

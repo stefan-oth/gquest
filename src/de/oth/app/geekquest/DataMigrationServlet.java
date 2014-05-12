@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
-import com.googlecode.objectify.cmd.Query;
 
 import de.oth.app.geekquest.model.Character;
 

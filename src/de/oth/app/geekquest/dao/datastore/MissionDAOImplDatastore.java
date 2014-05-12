@@ -47,6 +47,7 @@ public class MissionDAOImplDatastore implements MissionDAO {
         Mission mission = new Mission();
         mission.setDescription(description);
         mission.setIsAccomplished(accomplished);
+        mission.setParentKey(parentKey);
         
         update(mission);
 

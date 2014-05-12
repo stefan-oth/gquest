@@ -30,6 +30,10 @@ public class Mission {
     public Key<Character> getParentKey() {
         return parent;
     }
+    
+    public void setParentKey(Key<Character> parent) {
+        this.parent = parent;
+    }
 
     public String getDescription() {
         return description;

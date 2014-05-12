@@ -83,19 +83,19 @@ public class HighscoreQueryConsistencyTest {
         Key<Player> player1 = pDAO.create("1234");
         Key<Player> player2 = pDAO.create("4567");
         
-        cDAO.create("Frodo", 10, CharClass.Hobbit, 999l, player1);
-        cDAO.create("Sam", 8, CharClass.Hobbit, 500l, player1);
-        cDAO.create("Ghaeni", 15, CharClass.Dwarf, 457l, player1);
-        cDAO.create("Etniss", 11, CharClass.Elf, 782l, player1);
-        cDAO.create("Kelbur", 3, CharClass.Mage, 300l, player1);
-        cDAO.create("Danmor", 20, CharClass.Hobbit, 235l, player1);
-        cDAO.create("Ashecho", 9, CharClass.Dwarf, 578l, player1);
-        cDAO.create("Neroth", 14, CharClass.Hobbit, 54l, player1);
-        cDAO.create("Estost", 6, CharClass.Elf, 100l, player1);
-        cDAO.create("Ardar", 8, CharClass.Mage, 10000l, player1);
+        cDAO.create("Frodo", 10l, CharClass.Hobbit, 999l, player1);
+        cDAO.create("Sam", 8l, CharClass.Hobbit, 500l, player1);
+        cDAO.create("Ghaeni", 15l, CharClass.Dwarf, 457l, player1);
+        cDAO.create("Etniss", 11l, CharClass.Elf, 782l, player1);
+        cDAO.create("Kelbur", 3l, CharClass.Mage, 300l, player1);
+        cDAO.create("Danmor", 20l, CharClass.Hobbit, 235l, player1);
+        cDAO.create("Ashecho", 9l, CharClass.Dwarf, 578l, player1);
+        cDAO.create("Neroth", 14l, CharClass.Hobbit, 54l, player1);
+        cDAO.create("Estost", 6l, CharClass.Elf, 100l, player1);
+        cDAO.create("Ardar", 8l, CharClass.Mage, 10000l, player1);
         
-        cDAO.create("Istiny", 14, CharClass.Elf, 10001l, player2);
-        cDAO.create("Undny", 9, CharClass.Dwarf, 600l, player2);
+        cDAO.create("Istiny", 14l, CharClass.Elf, 10001l, player2);
+        cDAO.create("Undny", 9l, CharClass.Dwarf, 600l, player2);
         
         List<Character> actualTopX = new CharacterDAOImplDatastore().getTopXCharacters(
                 "4567", topX);
@@ -117,19 +117,19 @@ public class HighscoreQueryConsistencyTest {
         Key<Player> player1 = pDAO.create("1234");
         Key<Player> player2 = pDAO.create("4567");
         
-        cDAO.create("Frodo", 10, CharClass.Hobbit, 999l, player1);
-        cDAO.create("Sam", 8, CharClass.Hobbit, 500l, player1);
-        cDAO.create("Ghaeni", 15, CharClass.Dwarf, 457l, player1);
-        cDAO.create("Etniss", 11, CharClass.Elf, 782l, player1);
-        cDAO.create("Kelbur", 3, CharClass.Mage, 300l, player1);
-        cDAO.create("Danmor", 20, CharClass.Hobbit, 235l, player1);
-        cDAO.create("Ashecho", 9, CharClass.Dwarf, 578l, player1);
-        cDAO.create("Neroth", 14, CharClass.Hobbit, 54l, player1);
-        cDAO.create("Estost", 6, CharClass.Elf, 100l, player1);
-        cDAO.create("Ardar", 8, CharClass.Mage, 10000l, player1);
+        cDAO.create("Frodo", 10l, CharClass.Hobbit, 999l, player1);
+        cDAO.create("Sam", 8l, CharClass.Hobbit, 500l, player1);
+        cDAO.create("Ghaeni", 15l, CharClass.Dwarf, 457l, player1);
+        cDAO.create("Etniss", 11l, CharClass.Elf, 782l, player1);
+        cDAO.create("Kelbur", 3l, CharClass.Mage, 300l, player1);
+        cDAO.create("Danmor", 20l, CharClass.Hobbit, 235l, player1);
+        cDAO.create("Ashecho", 9l, CharClass.Dwarf, 578l, player1);
+        cDAO.create("Neroth", 14l, CharClass.Hobbit, 54l, player1);
+        cDAO.create("Estost", 6l, CharClass.Elf, 100l, player1);
+        cDAO.create("Ardar", 8l, CharClass.Mage, 10000l, player1);
         
-        cDAO.create("Istiny", 14, CharClass.Elf, 10001l, player2);
-        cDAO.create("Undny", 9, CharClass.Dwarf, 600l, player2);
+        cDAO.create("Istiny", 14l, CharClass.Elf, 10001l, player2);
+        cDAO.create("Undny", 9l, CharClass.Dwarf, 600l, player2);
         
         List<Character> actualTopX = new CharacterDAOImplDatastore().getTopXCharacters(
                 "4321", topX);
@@ -154,17 +154,17 @@ public class HighscoreQueryConsistencyTest {
         Key<Player> player1 = pDAO.create("1234");
         Key<Player> player2 = pDAO.create("4567");
         
-        cDAO.create("Frodo", 10, CharClass.Hobbit, 999l, player1);
-        cDAO.create("Sam", 8, CharClass.Hobbit, 500l, player1);
-        cDAO.create("Ghaeni", 15, CharClass.Dwarf, 457l, player1);
-        cDAO.create("Etniss", 11, CharClass.Elf, 782l, player1);
-        cDAO.create("Kelbur", 3, CharClass.Mage, 300l, player1);
-        cDAO.create("Danmor", 20, CharClass.Hobbit, 235l, player1);
-        cDAO.create("Ashecho", 9, CharClass.Dwarf, 578l, player1);
-        cDAO.create("Neroth", 14, CharClass.Hobbit, 54l, player1);
-        cDAO.create("Estost", 6, CharClass.Elf, 100l, player1);
-        cDAO.create("Ardar", 8, CharClass.Mage, 10000l, player1);
-        Key<Character> key = cDAO.create("Istiny", 14, CharClass.Elf, 0l, player2);
+        cDAO.create("Frodo", 10l, CharClass.Hobbit, 999l, player1);
+        cDAO.create("Sam", 8l, CharClass.Hobbit, 500l, player1);
+        cDAO.create("Ghaeni", 15l, CharClass.Dwarf, 457l, player1);
+        cDAO.create("Etniss", 11l, CharClass.Elf, 782l, player1);
+        cDAO.create("Kelbur", 3l, CharClass.Mage, 300l, player1);
+        cDAO.create("Danmor", 20l, CharClass.Hobbit, 235l, player1);
+        cDAO.create("Ashecho", 9l, CharClass.Dwarf, 578l, player1);
+        cDAO.create("Neroth", 14l, CharClass.Hobbit, 54l, player1);
+        cDAO.create("Estost", 6l, CharClass.Elf, 100l, player1);
+        cDAO.create("Ardar", 8l, CharClass.Mage, 10000l, player1);
+        Key<Character> key = cDAO.create("Istiny", 14l, CharClass.Elf, 0l, player2);
         
         List<Character> actualTopX = dao.getTopXCharacters("4567", topX);
         
@@ -199,17 +199,17 @@ public class HighscoreQueryConsistencyTest {
         Key<Player> player1 = pDAO.create("1234");
         Key<Player> player2 = pDAO.create("4567");
         
-        cDAO.create("Frodo", 10, CharClass.Hobbit, 999l, player1);
-        cDAO.create("Sam", 8, CharClass.Hobbit, 500l, player1);
-        cDAO.create("Ghaeni", 15, CharClass.Dwarf, 457l, player1);
-        cDAO.create("Etniss", 11, CharClass.Elf, 782l, player1);
-        cDAO.create("Kelbur", 3, CharClass.Mage, 300l, player1);
-        cDAO.create("Danmor", 20, CharClass.Hobbit, 235l, player1);
-        cDAO.create("Ashecho", 9, CharClass.Dwarf, 578l, player1);
-        cDAO.create("Neroth", 14, CharClass.Hobbit, 54l, player1);
-        cDAO.create("Estost", 6, CharClass.Elf, 100l, player1);
-        cDAO.create("Ardar", 8, CharClass.Mage, 10000l, player1);
-        Key<Character> key = cDAO.create("Istiny", 14, CharClass.Elf, 0l, player2);
+        cDAO.create("Frodo", 10l, CharClass.Hobbit, 999l, player1);
+        cDAO.create("Sam", 8l, CharClass.Hobbit, 500l, player1);
+        cDAO.create("Ghaeni", 15l, CharClass.Dwarf, 457l, player1);
+        cDAO.create("Etniss", 11l, CharClass.Elf, 782l, player1);
+        cDAO.create("Kelbur", 3l, CharClass.Mage, 300l, player1);
+        cDAO.create("Danmor", 20l, CharClass.Hobbit, 235l, player1);
+        cDAO.create("Ashecho", 9l, CharClass.Dwarf, 578l, player1);
+        cDAO.create("Neroth", 14l, CharClass.Hobbit, 54l, player1);
+        cDAO.create("Estost", 6l, CharClass.Elf, 100l, player1);
+        cDAO.create("Ardar", 8l, CharClass.Mage, 10000l, player1);
+        Key<Character> key = cDAO.create("Istiny", 14l, CharClass.Elf, 0l, player2);
         
         List<Character> actualTopX = dao.getTopXCharacters("0000", topX);
         
@@ -246,17 +246,17 @@ public class HighscoreQueryConsistencyTest {
         Key<Player> player1 = pDAO.create("1234");
         Key<Player> player2 = pDAO.create("4567");
         
-        cDAO.create("Frodo", 10, CharClass.Hobbit, 999l, player1);
-        cDAO.create("Sam", 8, CharClass.Hobbit, 500l, player1);
-        cDAO.create("Ghaeni", 15, CharClass.Dwarf, 457l, player1);
-        cDAO.create("Etniss", 11, CharClass.Elf, 782l, player1);
-        cDAO.create("Kelbur", 3, CharClass.Mage, 300l, player1);
-        cDAO.create("Danmor", 20, CharClass.Hobbit, 235l, player1);
-        cDAO.create("Ashecho", 9, CharClass.Dwarf, 578l, player1);
-        cDAO.create("Neroth", 14, CharClass.Hobbit, 54l, player1);
-        cDAO.create("Estost", 6, CharClass.Elf, 100l, player1);
-        cDAO.create("Ardar", 8, CharClass.Mage, 10000l, player1);
-        Key<Character> key = cDAO.create("Istiny", 14, CharClass.Elf, 299l, player2);
+        cDAO.create("Frodo", 10l, CharClass.Hobbit, 999l, player1);
+        cDAO.create("Sam", 8l, CharClass.Hobbit, 500l, player1);
+        cDAO.create("Ghaeni", 15l, CharClass.Dwarf, 457l, player1);
+        cDAO.create("Etniss", 11l, CharClass.Elf, 782l, player1);
+        cDAO.create("Kelbur", 3l, CharClass.Mage, 300l, player1);
+        cDAO.create("Danmor", 20l, CharClass.Hobbit, 235l, player1);
+        cDAO.create("Ashecho", 9l, CharClass.Dwarf, 578l, player1);
+        cDAO.create("Neroth", 14l, CharClass.Hobbit, 54l, player1);
+        cDAO.create("Estost", 6l, CharClass.Elf, 100l, player1);
+        cDAO.create("Ardar", 8l, CharClass.Mage, 10000l, player1);
+        Key<Character> key = cDAO.create("Istiny", 14l, CharClass.Elf, 299l, player2);
         
         List<Character> actualTopX = dao.getTopXCharacters("4567", topX);
         
@@ -293,17 +293,17 @@ public class HighscoreQueryConsistencyTest {
         
         CustomHighRepJobPolicy.disable();
         
-        cDAO.create("Frodo", 10, CharClass.Hobbit, 999l, player1);
-        cDAO.create("Sam", 8, CharClass.Hobbit, 500l, player1);
-        cDAO.create("Ghaeni", 15, CharClass.Dwarf, 457l, player1);
-        cDAO.create("Etniss", 11, CharClass.Elf, 782l, player1);
-        cDAO.create("Kelbur", 3, CharClass.Mage, 300l, player1);
-        cDAO.create("Danmor", 20, CharClass.Hobbit, 235l, player1);
-        cDAO.create("Ashecho", 9, CharClass.Dwarf, 578l, player1);
-        cDAO.create("Neroth", 14, CharClass.Hobbit, 54l, player1);
-        cDAO.create("Estost", 6, CharClass.Elf, 100l, player1);
-        cDAO.create("Ardar", 8, CharClass.Mage, 10000l, player1);
-        Key<Character> key = cDAO.create("Istiny", 14, CharClass.Elf, 299l, player2);
+        cDAO.create("Frodo", 10l, CharClass.Hobbit, 999l, player1);
+        cDAO.create("Sam", 8l, CharClass.Hobbit, 500l, player1);
+        cDAO.create("Ghaeni", 15l, CharClass.Dwarf, 457l, player1);
+        cDAO.create("Etniss", 11l, CharClass.Elf, 782l, player1);
+        cDAO.create("Kelbur", 3l, CharClass.Mage, 300l, player1);
+        cDAO.create("Danmor", 20l, CharClass.Hobbit, 235l, player1);
+        cDAO.create("Ashecho", 9l, CharClass.Dwarf, 578l, player1);
+        cDAO.create("Neroth", 14l, CharClass.Hobbit, 54l, player1);
+        cDAO.create("Estost", 6l, CharClass.Elf, 100l, player1);
+        cDAO.create("Ardar", 8l, CharClass.Mage, 10000l, player1);
+        Key<Character> key = cDAO.create("Istiny", 14l, CharClass.Elf, 299l, player2);
         
         List<Character> actualTopX = dao.getTopXCharacters("0000", topX);
         actualTopX = dao.getTopXCharacters("0000", topX);
@@ -343,17 +343,17 @@ public class HighscoreQueryConsistencyTest {
         Key<Player> player1 = pDAO.create("1234");
         Key<Player> player2 = pDAO.create("4567");
         
-        cDAO.create("Frodo", 10, CharClass.Hobbit, 999l, player1);
-        cDAO.create("Sam", 8, CharClass.Hobbit, 500l, player1);
-        cDAO.create("Ghaeni", 15, CharClass.Dwarf, 457l, player1);
-        cDAO.create("Etniss", 11, CharClass.Elf, 782l, player1);
-        cDAO.create("Kelbur", 3, CharClass.Mage, 300l, player1);
-        cDAO.create("Danmor", 20, CharClass.Hobbit, 235l, player1);
-        cDAO.create("Ashecho", 9, CharClass.Dwarf, 578l, player1);
-        cDAO.create("Neroth", 14, CharClass.Hobbit, 54l, player1);
-        cDAO.create("Estost", 6, CharClass.Elf, 100l, player1);
-        cDAO.create("Ardar", 8, CharClass.Mage, 10000l, player1);
-        Key<Character> key = cDAO.create("Istiny", 14, CharClass.Elf, 299l, player2);
+        cDAO.create("Frodo", 10l, CharClass.Hobbit, 999l, player1);
+        cDAO.create("Sam", 8l, CharClass.Hobbit, 500l, player1);
+        cDAO.create("Ghaeni", 15l, CharClass.Dwarf, 457l, player1);
+        cDAO.create("Etniss", 11l, CharClass.Elf, 782l, player1);
+        cDAO.create("Kelbur", 3l, CharClass.Mage, 300l, player1);
+        cDAO.create("Danmor", 20l, CharClass.Hobbit, 235l, player1);
+        cDAO.create("Ashecho", 9l, CharClass.Dwarf, 578l, player1);
+        cDAO.create("Neroth", 14l, CharClass.Hobbit, 54l, player1);
+        cDAO.create("Estost", 6l, CharClass.Elf, 100l, player1);
+        cDAO.create("Ardar", 8l, CharClass.Mage, 10000l, player1);
+        Key<Character> key = cDAO.create("Istiny", 14l, CharClass.Elf, 299l, player2);
         
         List<Character> actualTopX = dao.getTopXCharacters("4567", topX);
         
@@ -390,17 +390,17 @@ public class HighscoreQueryConsistencyTest {
         
         CustomHighRepJobPolicy.disable();
         
-        cDAO.create("Frodo", 10, CharClass.Hobbit, 999l, player1);
-        cDAO.create("Sam", 8, CharClass.Hobbit, 500l, player1);
-        cDAO.create("Ghaeni", 15, CharClass.Dwarf, 457l, player1);
-        cDAO.create("Etniss", 11, CharClass.Elf, 782l, player1);
-        cDAO.create("Kelbur", 3, CharClass.Mage, 300l, player1);
-        cDAO.create("Danmor", 20, CharClass.Hobbit, 235l, player1);
-        cDAO.create("Ashecho", 9, CharClass.Dwarf, 578l, player1);
-        cDAO.create("Neroth", 14, CharClass.Hobbit, 54l, player1);
-        cDAO.create("Estost", 6, CharClass.Elf, 100l, player1);
-        cDAO.create("Ardar", 8, CharClass.Mage, 10000l, player1);
-        Key<Character> key = cDAO.create("Istiny", 14, CharClass.Elf, 299l, player2);
+        cDAO.create("Frodo", 10l, CharClass.Hobbit, 999l, player1);
+        cDAO.create("Sam", 8l, CharClass.Hobbit, 500l, player1);
+        cDAO.create("Ghaeni", 15l, CharClass.Dwarf, 457l, player1);
+        cDAO.create("Etniss", 11l, CharClass.Elf, 782l, player1);
+        cDAO.create("Kelbur", 3l, CharClass.Mage, 300l, player1);
+        cDAO.create("Danmor", 20l, CharClass.Hobbit, 235l, player1);
+        cDAO.create("Ashecho", 9l, CharClass.Dwarf, 578l, player1);
+        cDAO.create("Neroth", 14l, CharClass.Hobbit, 54l, player1);
+        cDAO.create("Estost", 6l, CharClass.Elf, 100l, player1);
+        cDAO.create("Ardar", 8l, CharClass.Mage, 10000l, player1);
+        Key<Character> key = cDAO.create("Istiny", 14l, CharClass.Elf, 299l, player2);
         
         List<Character> actualTopX = dao.getTopXCharacters("0000", topX);
         

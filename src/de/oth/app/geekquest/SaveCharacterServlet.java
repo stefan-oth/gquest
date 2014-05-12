@@ -55,7 +55,7 @@ public class SaveCharacterServlet extends HttpServlet {
 	        
 	        Key<Player> playerKey = Key.create(Player.class, player.getUserId());
 	        
-	        Key<Character> key = charDAO.create(name, 10, charClass, 0l, playerKey);
+	        Key<Character> key = charDAO.create(name, 10l, charClass, 0l, playerKey);
 	        character = charDAO.find(key);
 	        if (character != null) {
 	            

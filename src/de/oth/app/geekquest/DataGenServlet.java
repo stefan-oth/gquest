@@ -56,7 +56,7 @@ public class DataGenServlet extends HttpServlet{
         
         for (int i = 0; i < names.length; i++) {
             int classId = (int) (Math.random() * classes.length);
-            int health = MIN_HEALTH + (int) (Math.random() * (MAX_HEALTH - MIN_HEALTH));
+            long health = MIN_HEALTH + (int) (Math.random() * (MAX_HEALTH - MIN_HEALTH));
             long score = MIN_SCORE + (long) (Math.random() * (MAX_SCORE - MIN_SCORE));
             Key<Character> key = cDAO.create(names[i], health, classes[classId], score, 
                     playerKey);
