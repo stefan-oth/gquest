@@ -1,9 +1,12 @@
 package de.oth.app.geekquest.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.googlecode.objectify.Key;
+import com.googlecode.objectify.Objectify;
+import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.annotation.AlsoLoad;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -11,9 +14,14 @@ import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Parent;
 
+import de.oth.app.geekquest.transactions.DrinkPotionTransaction;
+import de.oth.app.geekquest.transactions.HireMercenariesTransaction;
+import de.oth.app.geekquest.transactions.SellPotionTransaction;
+
 @Entity
 public class Character {
     
+    public static final int MAX_MERCENERIES_PER_TRANSACTION = 4;
     public static final long MAX_HEALTH = 20;
 
     @Id
@@ -144,5 +152,50 @@ public class Character {
     
     public void spend(long gold) {
         this.gold -= gold;
+    }
+    
+    public void sell(Potion potion, Character recipient, long price) {
+        
+        Objectify ofy = ObjectifyService.ofy();
+        
+        ofy.transact(new SellPotionTransaction(potion, this, recipient, price));
+        
+    }
+    
+    public void hire(long pay, Character... characters) {
+        if (characters == null || characters.length <= 0) {
+            return;
+        }
+        
+        //TODO solution for more than 5 characters (use loop)
+//        if (characters.length > 5) {
+//            throw new IllegalArgumentException("Hiring more than 5 mercenaries "
+//                    + "at once is not possible!");
+//        }
+        
+        Objectify ofy = ObjectifyService.ofy();
+        
+        int transactionCnt = (int) Math.ceil((double) characters.length / 
+                MAX_MERCENERIES_PER_TRANSACTION);
+        
+        for (int i = 0; i < transactionCnt; i++) {
+            int from = MAX_MERCENERIES_PER_TRANSACTION * i;
+            int to = Math.min((MAX_MERCENERIES_PER_TRANSACTION * (i + 1)), 
+                    characters.length);
+            Character[] merceneries = Arrays.copyOfRange(characters, from, to);
+            ofy.transact(new HireMercenariesTransaction(pay, this, merceneries));
+        }
+    }
+    
+    public long drink(Potion potion) {
+        Objectify ofy = ObjectifyService.ofy();
+        
+        if (potion.getOwnerKey() == null) {
+            return 0;
+        }
+        
+        Long healthHealed = ofy.transact(new DrinkPotionTransaction(potion));
+        
+        return healthHealed;
     }
 }

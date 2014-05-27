@@ -43,7 +43,6 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
         ofy.delete().key(key);
     }
 
-    //TODO rename to save
     @Override
     public void update(Character character) {
         Objectify ofy = ObjectifyService.ofy();
