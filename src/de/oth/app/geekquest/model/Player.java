@@ -11,7 +11,7 @@ import com.googlecode.objectify.annotation.Ignore;
 public class Player {
     @Id
     private String name;
-    //TODO remove userId because its a redundant information?
+    //TODO refactor this!
     private String userId;
     @Ignore
     private List<Character> characters = new ArrayList<>();
@@ -21,6 +21,7 @@ public class Player {
     }
 
     public void setUserId(String userId) {
+        this.name = userId;
         this.userId = userId;
     }
     

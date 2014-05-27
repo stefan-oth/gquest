@@ -146,6 +146,31 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
         
         return character;
     }
+    
+    @Override
+    public List<Character> findByNickName(String nickName) {
+        Objectify ofy = ObjectifyService.ofy();
+        MissionDAO missionsDAO = DAOManager.getMissionDAO();
+        PotionDAO potionDAO = DAOManager.getPotionDAO();
+        
+        Query<Character> query = ofy.load().type(Character.class);
+        
+        query = query.filter("nickName =", nickName);
+        
+        List<Character> characters = query.list();
+
+        for(Character character : characters) {
+            Key<Character> key = Key.create(character.getParentKey(), Character.class, 
+                    character.getId());
+            List<Mission> missions = missionsDAO.findByParent(key);
+            character.setMissions(missions);
+            
+            List<Potion> potions = potionDAO.findByParent(key);
+            character.setPotions(potions);
+        }
+        
+        return characters;
+    }
 
     /**
      * The characters are returned without missions and sorted by the score
@@ -230,6 +255,14 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
             }
             
             cursor = globalResult.getCursor();
+            
+            if (endReached && characters.size() < max) {
+                while (characters.size() < max 
+                        && idxUser < entitiesUser.size()) {
+                    characters.add(entitiesUser.get(idxUser));
+                    idxUser++;
+                }
+            }
         
         } while (characters.size() < max && !endReached);
         

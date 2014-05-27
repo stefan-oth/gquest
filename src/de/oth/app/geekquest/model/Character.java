@@ -29,6 +29,7 @@ public class Character {
     @Parent
     private Key<Player> parent;
     @AlsoLoad("name")
+    @Index
 	private String nickName;
 	@Index
 	private CharClass charClass;
@@ -37,6 +38,7 @@ public class Character {
 	@Index
 	private Long score;
 	private Long gold;
+	@Index
 	private String imageBlobKey;
 	
 	@Ignore

@@ -36,6 +36,8 @@ public class PlayerDAOImplDatastore implements PlayerDAO {
         
         Player player = new Player();
         player.setUserId(userId);
+        
+        update(player);
 
         Key<Player> key = Key.create(Player.class, userId);
         

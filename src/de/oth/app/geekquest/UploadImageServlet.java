@@ -46,7 +46,12 @@ public class UploadImageServlet extends HttpServlet {
             if (blobKeys.get(0) != null) {
                 if (character.getImageBlobKey() != null) {
                     BlobKey key = new BlobKey(character.getImageBlobKey());
-                    blobstoreService.delete(key);
+                    try {
+                        blobstoreService.delete(key);
+                    } catch (Exception ex) {
+                        //ignore this, because of https://code.google.com/p/googleappengine/issues/detail?id=4744
+                        // TODO remove this after bug is fixed
+                    }
                 }
                character.setImageBlobKey(blobKeys.get(0).getKeyString());
                charDAO.update(character);
