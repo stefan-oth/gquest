@@ -518,4 +518,60 @@ public class CharacterTest {
         assertEquals("gold count merc6", Long.valueOf(5l), merc6.getGold());
         
     }
+    
+    @Test
+    public void testHeal() {
+        
+        Key<Player> player1Key = pDAO.create("1234");
+        Key<Character> p1CKey = cDAO.create("Frodo", 10l, 
+                CharClass.Hobbit, 999l, player1Key);
+        
+        Character character = cDAO.find(p1CKey);
+        character.heal(5);
+        assertEquals("health character", Long.valueOf(15l), character.getHealth());
+        character = cDAO.find(p1CKey);
+        assertEquals("health character", Long.valueOf(15l), character.getHealth());
+    }
+    
+    @Test
+    public void testHealMaximumHealth() {
+        
+        Key<Player> player1Key = pDAO.create("1234");
+        Key<Character> p1CKey = cDAO.create("Frodo", Character.MAX_HEALTH - 2, 
+                CharClass.Hobbit, 999l, player1Key);
+        
+        Character character = cDAO.find(p1CKey);
+        character.heal(5);
+        assertEquals("health character", Long.valueOf(Character.MAX_HEALTH), character.getHealth());
+        character = cDAO.find(p1CKey);
+        assertEquals("health character", Long.valueOf(Character.MAX_HEALTH), character.getHealth());
+    }
+    
+    @Test
+    public void testHurt() {
+        
+        Key<Player> player1Key = pDAO.create("1234");
+        Key<Character> p1CKey = cDAO.create("Frodo", 10l, 
+                CharClass.Hobbit, 999l, player1Key);
+        
+        Character character = cDAO.find(p1CKey);
+        character.hurt(5);
+        assertEquals("health character", Long.valueOf(5l), character.getHealth());
+        character = cDAO.find(p1CKey);
+        assertEquals("health character", Long.valueOf(5l), character.getHealth());
+    }
+    
+    @Test
+    public void testOverkill() {
+        
+        Key<Player> player1Key = pDAO.create("1234");
+        Key<Character> p1CKey = cDAO.create("Frodo", 4l, 
+                CharClass.Hobbit, 999l, player1Key);
+        
+        Character character = cDAO.find(p1CKey);
+        character.hurt(5);
+        assertEquals("healt character", Long.valueOf(0), character.getHealth());
+        character = cDAO.find(p1CKey);
+        assertEquals("healt character", Long.valueOf(0), character.getHealth());
+    }
 }

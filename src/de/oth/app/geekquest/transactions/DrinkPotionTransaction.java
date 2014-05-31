@@ -29,7 +29,9 @@ public class DrinkPotionTransaction implements Work<Long> {
         character.heal(heal);
         potion.setEmpty();
         
-        ofy.save().entities(character, potion);
+        //TODO remove below
+        //ofy.save().entities(character, potion);
+        ofy.save().entities(potion);
 
         return heal;
     }

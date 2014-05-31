@@ -60,7 +60,17 @@ String imageServingUrl = null;
 if (user != null){
     url = userService.createLogoutURL(request.getRequestURI());
     urlLinktext = "Logout";
-    character = dao.findFirstByUserId(user.getUserId());
+    
+    if (request.getParameter("characterId") != null) {
+        characterId = Long.valueOf(request.getParameter("characterId"));
+    }
+    
+    if (characterId == null) {
+        character = dao.findFirstByUserId(user.getUserId());
+    } else {
+        character = dao.find(characterId, user.getUserId());
+    }
+    
     if (character == null) {
         character = new Character();
         characterId = -1l;

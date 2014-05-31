@@ -7,6 +7,7 @@ import java.util.List;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.VoidWork;
 import com.googlecode.objectify.annotation.AlsoLoad;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -22,7 +23,7 @@ import de.oth.app.geekquest.transactions.SellPotionTransaction;
 public class Character {
     
     public static final int MAX_MERCENERIES_PER_TRANSACTION = 4;
-    public static final long MAX_HEALTH = 20;
+    public static final long MAX_HEALTH = 100;
 
     @Id
     private Long id;
@@ -124,12 +125,44 @@ public class Character {
 	    this.potions.add(potion);
 	}
 
-	public void heal(long points) {
-		setHealth(getHealth() + points);
+	public void heal(final long points) {
+        final Objectify ofy = ObjectifyService.ofy();
+        
+        ofy.transact(new VoidWork() {
+            
+            @Override
+            public void vrun() {
+                Key<Character> key = Key.create(getParentKey(), 
+                        Character.class, getId());
+                
+                Character character = ofy.load().key(key).now();
+                long hp = Math.min(character.getHealth() + points, MAX_HEALTH);
+                character.setHealth(hp);
+                setHealth(hp);
+                ofy.save().entity(character);
+                
+            }
+        });
 	}
 
-	public void hurt(long points) {
-		setHealth(getHealth() - points);
+	public void hurt(final long points) {
+        final Objectify ofy = ObjectifyService.ofy();
+        
+        ofy.transact(new VoidWork() {
+            
+            @Override
+            public void vrun() {
+                Key<Character> key = Key.create(getParentKey(), 
+                        Character.class, getId());
+                
+                Character character = ofy.load().key(key).now();
+                long hp = Math.max(character.getHealth() - points, 0);
+                character.setHealth(hp);
+                setHealth(hp);
+                ofy.save().entity(character);
+                
+            }
+        });
 	}
 
     public Long getScore() {
@@ -168,12 +201,6 @@ public class Character {
         if (characters == null || characters.length <= 0) {
             return;
         }
-        
-        //TODO solution for more than 5 characters (use loop)
-//        if (characters.length > 5) {
-//            throw new IllegalArgumentException("Hiring more than 5 mercenaries "
-//                    + "at once is not possible!");
-//        }
         
         Objectify ofy = ObjectifyService.ofy();
         

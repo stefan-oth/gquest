@@ -29,6 +29,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
         <servlet-class>de.oth.app.geekquest.UploadImageServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>AttackCharacter</servlet-name>
+        <servlet-class>de.oth.app.geekquest.AttackCharacterServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>Geekquest</servlet-name>
         <jsp-file>/GeekQuest.jsp</jsp-file>
     </servlet>
@@ -44,7 +48,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
         <servlet-name>FindHobbitNameForm</servlet-name>
         <jsp-file>/FindHobbitNameForm.jsp</jsp-file>
     </servlet>
-    
+    <servlet>
+        <servlet-name>BattlePage</servlet-name>
+        <jsp-file>/BattlePage.jsp</jsp-file>
+    </servlet>
 	<servlet-mapping>
 		<servlet-name>SaveCharacter</servlet-name>
 		<url-pattern>/save</url-pattern>
@@ -76,6 +83,14 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     <servlet-mapping>
         <servlet-name>FindHobbitNameForm</servlet-name>
         <url-pattern>/findhobbitname</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BattlePage</servlet-name>
+        <url-pattern>/battle</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AttackCharacter</servlet-name>
+        <url-pattern>/attack</url-pattern>
     </servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>Highscore.jsp</welcome-file>
