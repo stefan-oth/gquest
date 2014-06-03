@@ -56,12 +56,13 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
         
         Character character = new Character();
         character.setNickName(name);
-        character.setHealth(health);
         character.setCharClass(charClass);
         character.setScore(score);
         character.setParentKey(parentKey);
 
         update(character);
+        
+        character.setHealth(health);
         
         Key<Character> key = Key.create(character.getParentKey(), Character.class, 
                 character.getId());

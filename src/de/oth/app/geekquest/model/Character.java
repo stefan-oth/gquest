@@ -7,7 +7,6 @@ import java.util.List;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
-import com.googlecode.objectify.VoidWork;
 import com.googlecode.objectify.annotation.AlsoLoad;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -18,6 +17,7 @@ import com.googlecode.objectify.annotation.Parent;
 import de.oth.app.geekquest.transactions.DrinkPotionTransaction;
 import de.oth.app.geekquest.transactions.HireMercenariesTransaction;
 import de.oth.app.geekquest.transactions.SellPotionTransaction;
+import de.oth.app.geekquest.util.ShardedCounter;
 
 @Entity
 public class Character {
@@ -34,8 +34,8 @@ public class Character {
 	private String nickName;
 	@Index
 	private CharClass charClass;
-	@Index
-	private Long health;
+	@Ignore
+	private ShardedCounter health;
 	@Index
 	private Long score;
 	private Long gold;
@@ -50,7 +50,18 @@ public class Character {
 	public Character() {
 	    this.gold = 0l;
 	    this.score = 0l;
-	    this.health = 10l;
+	}
+	
+	public void importHealth(@AlsoLoad("health") Long health) {
+	    if (health != null) {
+	        if (this.health == null) {
+	            this.health = new ShardedCounter(getShardedCounterName("health"));
+	        }
+	        
+	        if (!this.health.isShardCreated()) {
+	            this.health.increment(health);
+	        }
+	    }
 	}
 	
     public Long getId() {
@@ -86,11 +97,22 @@ public class Character {
 	}
 
 	public Long getHealth() {
-		return health;
+	    if (health == null) {
+	        health = new ShardedCounter(getShardedCounterName("health"));
+	    }
+	    
+		return health.getValue();
 	}
 
-	public void setHealth(long health) {
-		this.health = health;
+	public void setHealth(long hp) {
+        if (health == null) {
+            health = new ShardedCounter(getShardedCounterName("health"));
+        }
+        if (health.isShardCreated()) {
+            health.reset();
+        }
+       
+        health.increment(hp);
 	}
 	
 	public String getImageBlobKey() {
@@ -126,43 +148,25 @@ public class Character {
 	}
 
 	public void heal(final long points) {
-        final Objectify ofy = ObjectifyService.ofy();
+	    
+        if (health == null) {
+            health = new ShardedCounter(getShardedCounterName("health"));
+        }
         
-        ofy.transact(new VoidWork() {
-            
-            @Override
-            public void vrun() {
-                Key<Character> key = Key.create(getParentKey(), 
-                        Character.class, getId());
-                
-                Character character = ofy.load().key(key).now();
-                long hp = Math.min(character.getHealth() + points, MAX_HEALTH);
-                character.setHealth(hp);
-                setHealth(hp);
-                ofy.save().entity(character);
-                
-            }
-        });
+        long hp = Math.min(MAX_HEALTH - getHealth(), points);
+        
+        health.increment(hp);
 	}
 
 	public void hurt(final long points) {
-        final Objectify ofy = ObjectifyService.ofy();
+	    
+        if (health == null) {
+            health = new ShardedCounter(getShardedCounterName("health"));
+        }
         
-        ofy.transact(new VoidWork() {
-            
-            @Override
-            public void vrun() {
-                Key<Character> key = Key.create(getParentKey(), 
-                        Character.class, getId());
-                
-                Character character = ofy.load().key(key).now();
-                long hp = Math.max(character.getHealth() - points, 0);
-                character.setHealth(hp);
-                setHealth(hp);
-                ofy.save().entity(character);
-                
-            }
-        });
+        long hp = Math.min(getHealth(), points);
+        
+        health.decrement(hp);
 	}
 
     public Long getScore() {
@@ -226,5 +230,9 @@ public class Character {
         Long healthHealed = ofy.transact(new DrinkPotionTransaction(potion));
         
         return healthHealed;
+    }
+    
+    private String getShardedCounterName(String property) {
+        return Character.class.getSimpleName() + "_" + getId() + "_" + property;
     }
 }
