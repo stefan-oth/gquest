@@ -51,19 +51,17 @@ public class AttackCharacterServlet  extends HttpServlet {
         Character character = charDAO.find(charId, playerKey.getName());
         
         if (character != null) {
-            if (character.getHealth() > 0) {
-                LOG.info(character.getNickName() + " hit by 1");
-                character.hurt(1);
-                
-                boolean heal = rng.nextInt(RNG_HEAL_INT_LIMIT) 
-                        == INT_VALUE_FOR_HEAL;
-                if (heal) {
-                    long hp = rng.nextInt(MAX_HP_HEAL - 1) + 1;
-                    LOG.info(character.getNickName() + " healed by " 
-                            + hp);
-                    character.heal(hp);
-                }
+            //if (character.getHealth() > 0) {
+            LOG.info(character.getNickName() + " hit by 1");
+            character.hurt(1);
+
+            boolean heal = rng.nextInt(RNG_HEAL_INT_LIMIT) == INT_VALUE_FOR_HEAL;
+            if (heal) {
+                long hp = rng.nextInt(MAX_HP_HEAL - 1) + 1;
+                LOG.info(character.getNickName() + " healed by " + hp);
+                character.heal(hp);
             }
+            //}
         }
 
         resp.sendRedirect("/battle");

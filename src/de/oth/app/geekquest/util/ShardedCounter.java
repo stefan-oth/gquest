@@ -165,20 +165,6 @@ public class ShardedCounter {
             DS.delete(shardKey);
         }
     }
-    
-    public boolean isShardCreated() {
-        for (int i = 0; i < getShardCount(); i++) {
-            Key shardKey = KeyFactory.createKey(kind, Long.toString(i));
-            try {
-                DS.get(shardKey);
-                return true;
-            } catch (EntityNotFoundException e) {
-                // there is no shard
-            }
-        }
-
-        return false;
-    }
 
     /**
      * Increment the value of this sharded counter by the given value.

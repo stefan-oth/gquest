@@ -3,6 +3,7 @@ package de.oth.app.geekquest.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
@@ -14,6 +15,7 @@ import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Parent;
 
+import de.oth.app.geekquest.dao.DAOManager;
 import de.oth.app.geekquest.transactions.DrinkPotionTransaction;
 import de.oth.app.geekquest.transactions.HireMercenariesTransaction;
 import de.oth.app.geekquest.transactions.SellPotionTransaction;
@@ -24,6 +26,12 @@ public class Character {
     
     public static final int MAX_MERCENERIES_PER_TRANSACTION = 4;
     public static final long MAX_HEALTH = 100;
+    
+    /**
+     * A logger object.
+     */
+    private static final Logger LOG = Logger.getLogger(Character.class
+            .getName());
 
     @Id
     private Long id;
@@ -58,9 +66,11 @@ public class Character {
 	            this.health = new ShardedCounter(getShardedCounterName("health"));
 	        }
 	        
-	        if (!this.health.isShardCreated()) {
-	            this.health.increment(health);
-	        }
+	        //increment shards by health
+	        this.health.increment(health);
+	        
+	        //remove health property
+	        DAOManager.getCharacterDAO().update(this);
 	    }
 	}
 	
@@ -108,9 +118,8 @@ public class Character {
         if (health == null) {
             health = new ShardedCounter(getShardedCounterName("health"));
         }
-        if (health.isShardCreated()) {
-            health.reset();
-        }
+        
+        health.reset();
        
         health.increment(hp);
 	}
