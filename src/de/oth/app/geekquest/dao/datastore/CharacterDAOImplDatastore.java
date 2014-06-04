@@ -12,14 +12,9 @@ import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.cmd.Query;
 
 import de.oth.app.geekquest.dao.CharacterDAO;
-import de.oth.app.geekquest.dao.DAOManager;
-import de.oth.app.geekquest.dao.MissionDAO;
-import de.oth.app.geekquest.dao.PotionDAO;
 import de.oth.app.geekquest.model.CharClass;
 import de.oth.app.geekquest.model.Character;
-import de.oth.app.geekquest.model.Mission;
 import de.oth.app.geekquest.model.Player;
-import de.oth.app.geekquest.model.Potion;
 
 public class CharacterDAOImplDatastore implements CharacterDAO {
 
@@ -71,17 +66,9 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
 
     @Override
     public Character find(Key<Character> key) {
-        MissionDAO missionsDAO = DAOManager.getMissionDAO();
-        PotionDAO potionDAO = DAOManager.getPotionDAO();
         Objectify ofy = ObjectifyService.ofy();
         
         Character character = ofy.load().key(key).now();
-
-        List<Mission> missions = missionsDAO.findByParent(key);
-        character.setMissions(missions);
-        
-        List<Potion> potions = potionDAO.findByParent(key);
-        character.setPotions(potions);
 
         return character;
     }
@@ -96,23 +83,9 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
     @Override
     public List<Character> findByParent(Key<Player> parentKey) {
         Objectify ofy = ObjectifyService.ofy();
-        MissionDAO missionsDAO = DAOManager.getMissionDAO();
-        PotionDAO potionDAO = DAOManager.getPotionDAO();
         
         List<Character> characters = ofy.load().type(Character.class).ancestor(
                 parentKey).list();
-        
-        for (Character character : characters) {
-            Key<Character> key = Key.create(character.getParentKey(), Character.class, 
-                    character.getId());
-            List<Mission> missions = missionsDAO.findByParent(key);
-            character.setMissions(missions);
-            
-            List<Potion> potions = potionDAO.findByParent(key);
-            character.setPotions(potions);
-            
-            characters.add(character);
-        }
         
         return characters;
     }
@@ -126,23 +99,11 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
     @Override
     public Character findFirstByUserId(String userId) {
         Objectify ofy = ObjectifyService.ofy();
-        MissionDAO missionsDAO = DAOManager.getMissionDAO();
-        PotionDAO potionDAO = DAOManager.getPotionDAO();
         
         Key<Player> parentKey = Key.create(Player.class, userId);
         
         Character character = ofy.load().type(Character.class).ancestor(
                 parentKey).first().now();
-
-        if ( character != null) {
-            Key<Character> key = Key.create(character.getParentKey(), Character.class, 
-                    character.getId());
-            List<Mission> missions = missionsDAO.findByParent(key);
-            character.setMissions(missions);
-            
-            List<Potion> potions = potionDAO.findByParent(key);
-            character.setPotions(potions);
-        }
         
         return character;
     }
@@ -150,24 +111,12 @@ public class CharacterDAOImplDatastore implements CharacterDAO {
     @Override
     public List<Character> findByNickName(String nickName) {
         Objectify ofy = ObjectifyService.ofy();
-        MissionDAO missionsDAO = DAOManager.getMissionDAO();
-        PotionDAO potionDAO = DAOManager.getPotionDAO();
         
         Query<Character> query = ofy.load().type(Character.class);
         
         query = query.filter("nickName =", nickName);
         
         List<Character> characters = query.list();
-
-        for(Character character : characters) {
-            Key<Character> key = Key.create(character.getParentKey(), Character.class, 
-                    character.getId());
-            List<Mission> missions = missionsDAO.findByParent(key);
-            character.setMissions(missions);
-            
-            List<Potion> potions = potionDAO.findByParent(key);
-            character.setPotions(potions);
-        }
         
         return characters;
     }

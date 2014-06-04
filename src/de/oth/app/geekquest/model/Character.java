@@ -15,6 +15,7 @@ import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Parent;
 
+import de.oth.app.geekquest.dao.DAOManager;
 import de.oth.app.geekquest.transactions.DrinkPotionTransaction;
 import de.oth.app.geekquest.transactions.HireMercenariesTransaction;
 import de.oth.app.geekquest.transactions.SellPotionTransaction;
@@ -43,9 +44,9 @@ public class Character {
 	private String imageBlobKey;
 	
 	@Ignore
-	private List<Mission> missions = new ArrayList<>();
+	private List<Mission> missions = null;
 	@Ignore
-	private List<Potion> potions = new ArrayList<>();
+	private List<Potion> potions = null;
 	
 	public Character() {
 	    this.gold = 0l;
@@ -102,27 +103,29 @@ public class Character {
 	}
 	
 	public List<Mission> getMissions() {
+        if (missions == null) {
+            missions = DAOManager.getMissionDAO().findByParent(
+                    Key.create(getParentKey(), Character.class, id));
+        }
+	    
 		return missions;
 	}
 
-	public void setMissions(List<Mission> missions) {
-		this.missions = missions;
-	}
-
 	public void addMissions(Mission mission) {
-		this.missions.add(mission);
+		getMissions().add(mission);
 	}
 	
 	public List<Potion> getPotions() {
+        if (potions == null) {
+            potions = DAOManager.getPotionDAO().findByParent(
+                    Key.create(getParentKey(), Character.class, id));
+        }
+        
 	    return potions;
 	}
 	
-	public void setPotions(List<Potion> potions) {
-	    this.potions = potions;
-	}
-	
 	public void addPotion(Potion potion) {
-	    this.potions.add(potion);
+	    getPotions().add(potion);
 	}
 
 	public void heal(final long points) {

@@ -16,6 +16,7 @@ import com.google.appengine.api.datastore.dev.HighRepJobPolicy;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
+import de.oth.app.geekquest.dao.DAOManager;
 import de.oth.app.geekquest.model.CharClass;
 import de.oth.app.geekquest.model.Character;
 
@@ -83,7 +84,7 @@ public class HighscoreQueryHRDTest {
         
         ds.put(entity);
         
-        List<Character> entities = new CharacterDAOImplDatastore()
+        List<Character> entities = DAOManager.getCharacterDAO()
                 .getCharactersForHighscore(10, 0);
         
         assertEquals(1, entities.size());
