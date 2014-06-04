@@ -1,9 +1,7 @@
 package de.oth.app.geekquest.model;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
@@ -26,12 +24,6 @@ public class Character {
     
     public static final int MAX_MERCENERIES_PER_TRANSACTION = 4;
     public static final long MAX_HEALTH = 100;
-    
-    /**
-     * A logger object.
-     */
-    private static final Logger LOG = Logger.getLogger(Character.class
-            .getName());
 
     @Id
     private Long id;
@@ -51,9 +43,9 @@ public class Character {
 	private String imageBlobKey;
 	
 	@Ignore
-	private List<Mission> missions = new ArrayList<>();
+	private List<Mission> missions = null;
 	@Ignore
-	private List<Potion> potions = new ArrayList<>();
+	private List<Potion> potions = null;
 	
 	public Character() {
 	    this.gold = 0l;
@@ -133,27 +125,29 @@ public class Character {
 	}
 	
 	public List<Mission> getMissions() {
+	    if (missions == null) {
+	        missions = DAOManager.getMissionDAO().findByParent(
+	                Key.create(getParentKey(), Character.class, id));
+	    }
+	    
 		return missions;
 	}
 
-	public void setMissions(List<Mission> missions) {
-		this.missions = missions;
-	}
-
 	public void addMissions(Mission mission) {
-		this.missions.add(mission);
+		getMissions().add(mission);
 	}
 	
 	public List<Potion> getPotions() {
+        if (potions == null) {
+            potions = DAOManager.getPotionDAO().findByParent(
+                    Key.create(getParentKey(), Character.class, id));
+        }
+        
 	    return potions;
 	}
 	
-	public void setPotions(List<Potion> potions) {
-	    this.potions = potions;
-	}
-	
 	public void addPotion(Potion potion) {
-	    this.potions.add(potion);
+	    getPotions().add(potion);
 	}
 
 	public void heal(final long points) {
