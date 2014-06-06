@@ -151,12 +151,13 @@ public class Character {
 	}
 
 	public void heal(final long points) {
-	    
+	    	    
         if (health == null) {
             health = new ShardedCounter(getShardedCounterName("health"));
         }
         
-        long hp = Math.min(MAX_HEALTH - getHealth(), points);
+        //long hp = Math.min(MAX_HEALTH - getHealth(), points);
+        long hp = points;
         
         health.increment(hp);
 	}
@@ -167,7 +168,8 @@ public class Character {
             health = new ShardedCounter(getShardedCounterName("health"));
         }
         
-        long hp = Math.min(getHealth(), points);
+        //long hp = Math.min(getHealth(), points);
+        long hp = points;
         
         health.decrement(hp);
 	}
