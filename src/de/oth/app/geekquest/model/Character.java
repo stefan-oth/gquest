@@ -6,17 +6,21 @@ import java.util.List;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.VoidWork;
 import com.googlecode.objectify.annotation.AlsoLoad;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.OnLoad;
 import com.googlecode.objectify.annotation.Parent;
 
 import de.oth.app.geekquest.dao.DAOManager;
+import de.oth.app.geekquest.dao.MissionDAO;
 import de.oth.app.geekquest.transactions.DrinkPotionTransaction;
 import de.oth.app.geekquest.transactions.HireMercenariesTransaction;
 import de.oth.app.geekquest.transactions.SellPotionTransaction;
+import de.oth.app.geekquest.transactions.migration.MissionMigrationTransaction;
 import de.oth.app.geekquest.util.ShardedCounter;
 
 @Entity
@@ -51,6 +55,34 @@ public class Character {
 	    this.gold = 0l;
 	    this.score = 0l;
 	}
+	
+	@OnLoad public void onLoad() {
+	    Objectify ofy = ObjectifyService.ofy();
+	    
+	    List<Mission> oldMissions = ofy.load().type(Mission.class).ancestor(
+	            Key.create(getParentKey(), Character.class, id)).list();
+	    
+        if (oldMissions != null) {
+            for (Mission mission : oldMissions) {
+                
+                ofy.transact(new MissionMigrationTransaction(mission));
+ 
+//                Mission newMission = ofy.load().key(Key.create(
+//                        Mission.class, mission.getId())).now();
+//                
+//                Key<Character> parent = mission.getParentKey();
+//                
+//                if (newMission == null) {
+//                    //create copy without parent
+//                    mission.setCharacterKey(parent);
+//                    mission.setParentKey(null);
+//                    mDAO.update(mission);
+//                }
+//                //delete old mission copy
+//                ofy.delete().key(Key.create(parent, Mission.class, mission.getId()));
+            }
+        }
+    }
 	
 	public void importHealth(@AlsoLoad("health") Long health) {
 	    if (health != null) {
@@ -126,7 +158,7 @@ public class Character {
 	
 	public List<Mission> getMissions() {
 	    if (missions == null) {
-	        missions = DAOManager.getMissionDAO().findByParent(
+	        missions = DAOManager.getMissionDAO().findByCharacter(
 	                Key.create(getParentKey(), Character.class, id));
 	    }
 	    

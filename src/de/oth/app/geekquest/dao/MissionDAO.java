@@ -11,8 +11,8 @@ import de.oth.app.geekquest.model.Mission;
 public interface MissionDAO {
     public void delete(Mission mission);
     public void update(Mission mission);
-    public Key<Mission> create(String description, Boolean accomplished, Key<Character> parentKey);
+    public Key<Mission> create(String description, Boolean accomplished, Key<Character> characterKey);
     public Mission find(Key<Mission> key);
-    public Mission find(Long id, Key<Character> parentKey);
-    public List<Mission> findByParent(Key<Character> parentKey);
+    public Mission find(Long id);
+    public List<Mission> findByCharacter(Key<Character> characterKey);
 }

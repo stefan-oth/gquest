@@ -21,12 +21,12 @@ public class MissionDAOImplDatastore implements MissionDAO {
             return;
         }
         
-        if (mission.getParentKey() == null) {
+        if (mission.getCharacterKey() == null) {
             System.out.println("Delete - Mission parentKey is null");
             return;
         }
         
-        Key<Mission> key = Key.create(mission.getParentKey(), Mission.class, 
+        Key<Mission> key = Key.create(mission.getCharacterKey(), Mission.class, 
                 mission.getId());
         
         ofy.delete().key(key);        
@@ -42,17 +42,16 @@ public class MissionDAOImplDatastore implements MissionDAO {
 
     @Override
     public Key<Mission> create(String description, Boolean accomplished, 
-            Key<Character> parentKey) {
+            Key<Character> characterKey) {
 
         Mission mission = new Mission();
         mission.setDescription(description);
         mission.setIsAccomplished(accomplished);
-        mission.setParentKey(parentKey);
+        mission.setCharacterKey(characterKey);
         
         update(mission);
 
-        Key<Mission> key = Key.create(mission.getParentKey(), Mission.class, 
-                mission.getId());
+        Key<Mission> key = Key.create(Mission.class, mission.getId());
         
         return key;
     }
@@ -67,17 +66,21 @@ public class MissionDAOImplDatastore implements MissionDAO {
     }
 
     @Override
-    public Mission find(Long id, Key<Character> parentKey) {
-        Key<Mission> key = Key.create(parentKey, Mission.class, id);
+    public Mission find(Long id) {
+        Key<Mission> key = Key.create(Mission.class, id);
         return find(key);
     }
     
     @Override
-    public List<Mission> findByParent(Key<Character> parentKey) {
+    public List<Mission> findByCharacter(Key<Character> characterKey) {
         Objectify ofy = ObjectifyService.ofy();
         
-        List<Mission> missions = ofy.load().type(Mission.class).ancestor(
-                parentKey).list();
+        List<Mission> missions = ofy.load().type(Mission.class).filter(
+                "characterKey", characterKey).list();
+        
+        //TODO remove this after all missions are migrated
+        missions.addAll(ofy.load().type(Mission.class).ancestor(
+                characterKey).list());
         
         return missions;
     }
