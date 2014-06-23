@@ -1,6 +1,7 @@
 package de.oth.app.geekquest.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
@@ -16,7 +17,6 @@ import com.googlecode.objectify.ObjectifyService;
 
 import de.oth.app.geekquest.dao.CharacterDAO;
 import de.oth.app.geekquest.dao.DAOManager;
-import de.oth.app.geekquest.dao.MissionDAO;
 import de.oth.app.geekquest.dao.PlayerDAO;
 
 public class MissionMigrationTest {
@@ -27,7 +27,6 @@ public class MissionMigrationTest {
     
     private PlayerDAO pDAO = DAOManager.getPlayerDAO();
     private CharacterDAO cDAO = DAOManager.getCharacterDAO();
-    private MissionDAO mDAO = DAOManager.getMissionDAO();
     
     private Key<Player> playerKey;
     private Key<Character> characterKey;

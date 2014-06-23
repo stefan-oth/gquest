@@ -6,7 +6,6 @@ import java.util.List;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
-import com.googlecode.objectify.VoidWork;
 import com.googlecode.objectify.annotation.AlsoLoad;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -16,7 +15,6 @@ import com.googlecode.objectify.annotation.OnLoad;
 import com.googlecode.objectify.annotation.Parent;
 
 import de.oth.app.geekquest.dao.DAOManager;
-import de.oth.app.geekquest.dao.MissionDAO;
 import de.oth.app.geekquest.transactions.DrinkPotionTransaction;
 import de.oth.app.geekquest.transactions.HireMercenariesTransaction;
 import de.oth.app.geekquest.transactions.SellPotionTransaction;
@@ -66,20 +64,6 @@ public class Character {
             for (Mission mission : oldMissions) {
                 
                 ofy.transact(new MissionMigrationTransaction(mission));
- 
-//                Mission newMission = ofy.load().key(Key.create(
-//                        Mission.class, mission.getId())).now();
-//                
-//                Key<Character> parent = mission.getParentKey();
-//                
-//                if (newMission == null) {
-//                    //create copy without parent
-//                    mission.setCharacterKey(parent);
-//                    mission.setParentKey(null);
-//                    mDAO.update(mission);
-//                }
-//                //delete old mission copy
-//                ofy.delete().key(Key.create(parent, Mission.class, mission.getId()));
             }
         }
     }
